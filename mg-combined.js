@@ -1,6 +1,6 @@
 (function() {
   /* ══════════════════════════════════════════════════════════════
-     mg-combined.js v1.2.0 — Mentorship Guide page injection.
+     mg-combined.js v1.3.1 — Mentorship Guide page injection.
      Strategy: hide Webflow's native V2 Nav Light + Footer V2 (the
      Mentor Guide HTML ships with its own self-contained chrome), then
      inject the entire Mentorship Guide HTML/CSS into a scoped #mg-root.
@@ -136,7 +136,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 500; margin-bottom: 16px; line-height: 1.2; color: var(--mg-white); letter-spacing: -0.01em; }
 #mg-root .hero p { font-size: clamp(15px, 2.5vw, 18px); opacity: 0.85; max-width: 600px; margin: 0 auto 28px; color: var(--mg-white); }
 #mg-root .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-#mg-root .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; line-height: 1.2; letter-spacing: 0; text-decoration: none; transition: var(--mg-transition); cursor: pointer; border: none; }
+#mg-root .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; line-height: 1.2; letter-spacing: 0; text-transform: none; text-decoration: none; transition: var(--mg-transition); cursor: pointer; border: none; }
 #mg-root .btn-primary { background: var(--mg-white); color: var(--mg-crimson); }
 #mg-root .btn-primary:hover { background: var(--mg-gray-100); transform: translateY(-1px); }
 #mg-root .btn-outline { background: transparent; color: var(--mg-white); border: 1.5px solid rgba(255,255,255,0.4); }
@@ -183,11 +183,19 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .section-header { text-align: center; margin-bottom: 16px; }
 #mg-root .section-header h2 { font-size: clamp(22px, 4vw, 30px); font-weight: 700; color: var(--mg-dark); margin-bottom: 4px; }
 #mg-root .section-header p { color: var(--mg-gray-600); font-size: 14px; max-width: 600px; margin: 0 auto; }
-#mg-root .section-label { display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--mg-crimson); margin-bottom: 8px; }
+/* Eyebrow pill — matches homepage .p3-section-tag exactly (Inter 12px, 6px/16px, 50px radius) */
+#mg-root .section-label { display: inline-flex; align-items: center; font-family: 'Inter', system-ui, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 1px; line-height: 1.4; text-transform: uppercase; padding: 6px 16px; border-radius: 50px; margin-bottom: 14px; width: max-content; max-width: max-content; background: rgba(217,58,58,0.10); color: #B52F2F; }
+/* Dark/maroon variant — white translucent pill on dark section backgrounds */
+#mg-root .section-dark .section-label,
+#mg-root .section-convo .section-label,
+#mg-root .section-maroon .section-label { background: rgba(255,255,255,0.10); color: #ffffff; }
+/* Pill is an inline-flex block with max-content width — let text-align on the parent handle alignment */
+#mg-root .section-header { /* default centered */ }
 
 /* ─── WELCOME LAYOUT ─── */
-#mg-root .welcome-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: center; margin-bottom: 12px; }
+#mg-root .welcome-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; margin-bottom: 12px; }
 #mg-root .welcome-layout img.app-mockup { width: 100%; height: auto; border-radius: 12px; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.15)); }
+#mg-root .welcome-iphone-wrap { display: flex; align-items: flex-start; justify-content: center; padding-top: 0; }
 
 /* ─── CARDS ─── */
 #mg-root .card-grid { display: grid; gap: 12px; }
@@ -267,6 +275,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .tab-panel.active { display: block; }
 
 /* ─── MENTEE QUESTIONS ─── */
+#mg-root .mq-helper { text-align: center; font-size: 13px; color: var(--mg-gray-600); font-style: italic; margin-bottom: 14px; }
 #mg-root .mq-categories-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
 #mg-root .mq-category-card { background: var(--mg-white); border: 2px solid var(--mg-gray-200); border-radius: var(--mg-radius); padding: 10px 10px 12px; cursor: pointer; transition: var(--mg-transition); text-align: center; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
 #mg-root .mq-category-card:hover { border-color: var(--mg-crimson); box-shadow: var(--mg-shadow-md); transform: translateY(-2px); }
@@ -304,7 +313,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .resp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 18px; }
 #mg-root .resp-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius-lg); overflow: hidden; transition: var(--mg-transition); display: flex; flex-direction: column; box-shadow: var(--mg-shadow-sm); }
 #mg-root .resp-card:hover { box-shadow: var(--mg-shadow-md); transform: translateY(-3px); border-color: var(--mg-crimson); }
-#mg-root .resp-photo { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: center; display: block; }
+#mg-root .resp-photo { width: 100%; height: 140px; object-fit: cover; object-position: center 35%; display: block; }
 #mg-root .resp-card.resp-mentor { border-top: 3px solid var(--mg-crimson); }
 #mg-root .resp-card.resp-mentee { border-top: 3px solid var(--mg-accent-gold); }
 #mg-root .resp-body { padding: 18px 22px 22px; }
@@ -543,9 +552,24 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   #mg-root .mg-expect-body p { font-size: 12px; }
 
   #mg-root .resp-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
+  #mg-root .resp-photo { height: 110px; }
   #mg-root .resp-body { padding: 14px 16px 16px; }
   #mg-root .resp-body h3 { font-size: 16px; margin-bottom: 8px; }
   #mg-root .resp-body li { font-size: 13px; margin-bottom: 4px; }
+
+  /* Mobile: eyebrow pill - tighter padding + smaller font */
+  #mg-root .section-label { font-size: 10px; padding: 5px 12px; letter-spacing: 0.8px; margin-bottom: 10px; }
+
+  /* Mobile: "Stay Regularly Engaged" section padding/spacing */
+  #mg-root #engagement { padding: 16px 12px; }
+  #mg-root .journey-wrap { padding: 18px 14px 16px; border-radius: 14px; }
+  #mg-root .journey-wrap .journey-eyebrow { font-size: 10px; letter-spacing: 1.2px; margin-bottom: 4px; }
+  #mg-root .journey-wrap .journey-title { font-size: 18px; margin-bottom: 4px; }
+  #mg-root .journey-wrap .journey-sub { font-size: 12px; margin-bottom: 14px; }
+
+  /* Mobile: welcome iPhone wraps cleanly */
+  #mg-root .welcome-iphone-wrap { align-items: center; justify-content: center; margin-top: 8px; }
+  #mg-root .welcome-layout .app-mockup { max-width: 200px; }
 
   #mg-root details.mg-collapsible > summary { padding: 12px 14px; font-size: 13px; }
   #mg-root details.mg-collapsible .mg-collapsible-body { padding: 10px 12px 14px; }
@@ -581,8 +605,8 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   #mg-root .resource-filters { flex-direction: column; align-items: stretch; gap: 6px; margin-bottom: 10px; }
   #mg-root .filter-industry, #mg-root .filter-type { width: 100%; }
   #mg-root .filter-industry select { font-size: 13px; padding: 8px 10px; }
-  #mg-root .filter-type { flex-wrap: wrap; gap: 4px; }
-  #mg-root .filter-btn { padding: 5px 8px; font-size: 10px; flex: 1; min-width: 0; text-align: center; }
+  #mg-root .filter-type { flex-wrap: wrap; gap: 5px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  #mg-root .filter-btn { padding: 6px 10px; font-size: 11px; flex: 0 0 auto; min-width: 0; text-align: center; white-space: nowrap; }
   #mg-root .resource-grid { grid-template-columns: 1fr; gap: 5px; }
   #mg-root .resource-item { padding: 8px 10px; gap: 8px; }
   #mg-root .resource-type-icon { width: 30px; height: 30px; font-size: 14px; border-radius: 8px; }
@@ -670,6 +694,15 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   #mg-root .filter-btn { font-size: 9px; padding: 4px 6px; }
 
   #mg-root .addl-table th, #mg-root .addl-table td { padding: 6px 6px; font-size: 10px; }
+
+  /* 400px: resp photo + engagement tighter */
+  #mg-root .resp-photo { height: 100px; }
+  #mg-root .resp-body { padding: 12px 14px 14px; }
+  #mg-root #engagement { padding: 12px 8px; }
+  #mg-root .journey-wrap { padding: 14px 12px; }
+  #mg-root .journey-wrap .journey-title { font-size: 16px; }
+  #mg-root .welcome-layout .app-mockup { max-width: 170px; }
+  #mg-root .mq-helper { font-size: 11px; margin-bottom: 10px; }
 }
 `;
   document.head.appendChild(style);
@@ -764,18 +797,17 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
 <!-- MENTORSHIP FOR THE NEXT GENERATION -->
 <section class="section" id="welcome-section" style="padding-top: 20px; padding-bottom: 12px;">
-  <div class="section-header" style="text-align: left; margin-bottom: 10px;">
-    <span class="section-label">Welcome</span>
-    <h2 style="text-align: left;">Mentorship for the Next Generation</h2>
-  </div>
-
   <div class="fade-up">
     <div class="welcome-layout" style="align-items: flex-start;">
       <div>
+        <div class="section-header" style="text-align: left; margin-bottom: 10px;">
+          <span class="section-label">Welcome</span>
+          <h2 style="text-align: left;">Mentorship for the Next Generation</h2>
+        </div>
         <p style="font-size: 14px; color: var(--mg-gray-700); line-height: 1.5; margin-bottom: 12px;">Welcome to the Pulse of Perseverance Mentorship Community! We are honored to have you join a network of passionate professionals dedicated to helping young people of color access pathways to opportunity. This handbook is your roadmap to success as a P3 mentor whether this is your first mentoring experience or your fifteenth: your voice matters here.</p>
         <p style="font-size: 14px; color: var(--mg-gray-700); line-height: 1.5;">Our new mobile app connects students with experienced mentors through an engaging, accessible, and culturally relevant experience. Founded by three Black doctors who personally navigated their own journeys from underserved backgrounds to professional success, P3 ensures that our initiatives don't just serve disadvantaged communities &mdash; they are built, led, and continuously shaped by them.</p>
       </div>
-      <div style="display: flex; align-items: flex-start; justify-content: center;">
+      <div class="welcome-iphone-wrap">
         <img src="${IPHONE_MOCKUP}" alt="P3 Mobile App" class="app-mockup">
       </div>
     </div>
@@ -840,42 +872,17 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
           <div class="resp-body">
             <h3>Mentee Responsibilities</h3>
             <ul>
-              <li>Come prepared with questions and goals</li>
+              <li>Submit questions via the P3 app.</li>
+              <li>Select &amp; request connections on the P3 app</li>
               <li>Accept feedback with openness</li>
               <li>Take ownership of their growth</li>
               <li>Follow through on action steps</li>
-              <li>Select &amp; request connections on the P3 app</li>
+              <li>Update progress through app milestones.</li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div class="journey-wrap">
-        <span class="journey-eyebrow">What We Ask of You</span>
-        <h3 class="journey-title">Your Engagement Journey</h3>
-        <p class="journey-sub">Four simple commitments. The cadence in red is what mentees are counting on.</p>
-        <div class="timeline-h">
-          <div class="tl-step">
-            <div class="tl-dot">📹</div>
-            <div class="tl-label"><strong>Record Videos</strong><span>Share your authentic story</span><em>2–4 / month</em></div>
-          </div>
-          <div class="tl-line"></div>
-          <div class="tl-step">
-            <div class="tl-dot">💬</div>
-            <div class="tl-label"><strong>Answer Questions</strong><span>Direct mentee feedback</span><em>Within 3–5 days</em></div>
-          </div>
-          <div class="tl-line"></div>
-          <div class="tl-step">
-            <div class="tl-dot">📝</div>
-            <div class="tl-label"><strong>Give Feedback</strong><span>Refine skills &amp; confidence</span><em>Monthly</em></div>
-          </div>
-          <div class="tl-line"></div>
-          <div class="tl-step">
-            <div class="tl-dot">🚀</div>
-            <div class="tl-label"><strong>Share Opportunities</strong><span>Accelerate access to jobs</span><em>As available</em></div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 </div>
@@ -979,6 +986,36 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   </div>
 </section></div>
 
+<!-- STAY REGULARLY ENGAGED (formerly Your Engagement Journey — moved here from New to Mentorship) -->
+<section class="section" id="engagement">
+  <div class="journey-wrap">
+    <span class="journey-eyebrow">What We Ask of You</span>
+    <h3 class="journey-title">Stay Regularly Engaged</h3>
+    <p class="journey-sub">Four simple commitments. The cadence in red is what mentees are counting on.</p>
+    <div class="timeline-h">
+      <div class="tl-step">
+        <div class="tl-dot">📹</div>
+        <div class="tl-label"><strong>Record Videos</strong><span>Share your authentic story</span><em>2–4 / month</em></div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-step">
+        <div class="tl-dot">💬</div>
+        <div class="tl-label"><strong>Answer Questions</strong><span>Direct mentee feedback</span><em>Within 3–5 days</em></div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-step">
+        <div class="tl-dot">📝</div>
+        <div class="tl-label"><strong>Give Feedback</strong><span>Refine skills &amp; confidence</span><em>Monthly</em></div>
+      </div>
+      <div class="tl-line"></div>
+      <div class="tl-step">
+        <div class="tl-dot">🚀</div>
+        <div class="tl-label"><strong>Share Opportunities</strong><span>Accelerate access to jobs</span><em>As available</em></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- INDUSTRY PATHWAYS -->
 <div class="section-alt"><section class="section" id="pathways">
   <div class="section-header">
@@ -1036,6 +1073,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
     <p>Explore questions organized by topic area. These are the conversations your mentees want to have with you.</p>
   </div>
 
+  <p class="mq-helper">Tap a category to see questions</p>
   <div class="mq-categories-grid">
     <div class="mq-category-card active" onclick="mgSelectMQCategory(this, 'skills')"><img class="mq-cat-icon" src="https://lh3.googleusercontent.com/d/1f-ZXm8FtRgkNtT7b9gM0NVdRg-wyHZgT=w200" alt="Skills"><span class="mq-cat-name">Skills &amp; Professional<br>Development</span></div>
     <div class="mq-category-card" onclick="mgSelectMQCategory(this, 'journey')"><img class="mq-cat-icon" src="https://lh3.googleusercontent.com/d/1CI0nxcL8ZW_PEzLXhCGpMy4UVj4vcrPD=w200" alt="Career Journey"><span class="mq-cat-name">Career Journey &amp;<br>Inspiration</span></div>
@@ -1044,7 +1082,6 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
     <div class="mq-category-card" onclick="mgSelectMQCategory(this, 'networking')"><img class="mq-cat-icon" src="https://lh3.googleusercontent.com/d/1Lj5F7WcEXIOl1gytC_HOVlZtVTBMrF6y=w200" alt="Networking"><span class="mq-cat-name">Networking &amp;<br>Relationships</span></div>
     <div class="mq-category-card" onclick="mgSelectMQCategory(this, 'advice')"><img class="mq-cat-icon" src="https://lh3.googleusercontent.com/d/1yVa2cG5EWpuhHSV4E2OSGOikDGD0d_x2=w200" alt="Career Advice"><span class="mq-cat-name">Career Advice &amp;<br>Industry Insight</span></div>
   </div>
-  <p style="text-align:center; font-size:12px; color:var(--mg-gray-600); margin-bottom:16px;">Tap a category to see questions</p>
 
   <div class="mq-questions-panel active" id="mg-mq-skills"><ul class="mq-questions-list">
     <li class="mq-question-item">What skills are most critical to your success?</li>
