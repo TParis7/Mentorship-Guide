@@ -1,6 +1,6 @@
 (function() {
   /* ══════════════════════════════════════════════════════════════
-     mg-combined.js v1.3.1 — Mentorship Guide page injection.
+     mg-combined.js v1.3.2 — Mentorship Guide page injection.
      Strategy: hide Webflow's native V2 Nav Light + Footer V2 (the
      Mentor Guide HTML ships with its own self-contained chrome), then
      inject the entire Mentorship Guide HTML/CSS into a scoped #mg-root.
@@ -212,6 +212,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
 /* ─── SCREENS GRID (app screenshots) ─── */
 #mg-root .screens-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+#mg-root .mas-mobile { display: none; }
 #mg-root .screen-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius); padding: 10px; text-align: center; transition: var(--mg-transition); overflow: hidden; }
 #mg-root .screen-card:hover { box-shadow: var(--mg-shadow-md); border-color: var(--mg-crimson); transform: translateY(-2px); }
 #mg-root .screen-shot { width: 100%; aspect-ratio: 9 / 16; max-height: 300px; object-fit: cover; object-position: top; border-radius: 10px; display: block; }
@@ -629,6 +630,33 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   #mg-root .ticker-item { font-size: 11px; }
 
   #mg-root .max-w-800 { padding: 0; }
+
+  /* v1.3.2 — Mobile: hero buttons equal width */
+  #mg-root .hero-actions { width: 100%; flex-wrap: nowrap; gap: 10px; }
+  #mg-root .hero-actions .btn { flex: 1 1 0; min-width: 0; justify-content: center; padding-left: 12px; padding-right: 12px; }
+
+  /* v1.3.2 — Mobile: center "Mentorship for Next Generation" section (desktop stays left-aligned) */
+  #mg-root #welcome-section .section-header { text-align: center !important; }
+  #mg-root #welcome-section .section-header h2 { text-align: center !important; }
+  #mg-root #welcome-section .welcome-layout > div > p { text-align: center !important; }
+
+  /* v1.3.2 — Mobile: hide desktop "How Mobile App Works" split layout, show interleaved mobile layout */
+  #mg-root #getting-started .screens-grid { display: none; }
+  #mg-root #getting-started .steps { display: none; }
+  #mg-root .mas-mobile { display: flex; flex-direction: column; gap: 22px; margin-top: 14px; }
+  #mg-root .mas-mobile .mas-item { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  #mg-root .mas-mobile .mas-shot { width: 100%; max-width: 220px; aspect-ratio: 9/16; object-fit: cover; object-position: top; border-radius: 12px; border: 1px solid var(--mg-gray-200); background: var(--mg-white); padding: 8px; box-sizing: border-box; display: block; }
+  #mg-root .mas-mobile .mas-step { text-align: center; max-width: 320px; }
+  #mg-root .mas-mobile .mas-step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--mg-crimson); color: var(--mg-white); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; margin: 0 auto 6px; }
+  #mg-root .mas-mobile .mas-step h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--mg-dark); }
+  #mg-root .mas-mobile .mas-step p { font-size: 12px; color: var(--mg-gray-600); line-height: 1.4; }
+
+  /* v1.3.2 — Mobile: center "Share Your National Mentor Profile" section (desktop stays left) */
+  #mg-root .mg-portal-text { text-align: center; }
+  #mg-root .mg-portal-eyebrow { margin-left: auto; margin-right: auto; }
+  #mg-root .mg-portal-features { align-items: center; }
+  #mg-root .mg-pf-row { justify-content: center; text-align: left; }
+  #mg-root .mg-portal-cta { margin-left: auto; margin-right: auto; }
 }
 
 /* ─── MOBILE SMALL (≤400px) ─── */
@@ -930,6 +958,42 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
       <div class="step-num"></div>
       <h4>Kickstart Opportunities</h4>
       <p>Share internships, scholarships, and career-building resources with your mentees.</p>
+    </div>
+  </div>
+
+  <!-- Mobile-only: image + step paired per item -->
+  <div class="mas-mobile">
+    <div class="mas-item">
+      <img class="mas-shot" src="${SHOT_VIDEOS}" alt="My Videos screen — mentor video library in P3 app" loading="lazy">
+      <div class="mas-step">
+        <div class="mas-step-num">1</div>
+        <h4>Share Your Story</h4>
+        <p>Record videos answering targeted prompts about your career, lessons, and advice.</p>
+      </div>
+    </div>
+    <div class="mas-item">
+      <img class="mas-shot" src="${SHOT_MILESTONES}" alt="Milestones screen — track mentee progress" loading="lazy">
+      <div class="mas-step">
+        <div class="mas-step-num">2</div>
+        <h4>Connect with Mentees</h4>
+        <p>Get matched with driven students who align with your expertise and interests.</p>
+      </div>
+    </div>
+    <div class="mas-item">
+      <img class="mas-shot" src="${SHOT_GUIDE}" alt="Guide screen — answer mentee questions" loading="lazy">
+      <div class="mas-step">
+        <div class="mas-step-num">3</div>
+        <h4>Guide &amp; Support</h4>
+        <p>Answer questions, provide feedback, and help shape their career journey via the app.</p>
+      </div>
+    </div>
+    <div class="mas-item">
+      <img class="mas-shot" src="${SHOT_OPPORTUNITIES}" alt="Opportunities screen — share internships and scholarships" loading="lazy">
+      <div class="mas-step">
+        <div class="mas-step-num">4</div>
+        <h4>Kickstart Opportunities</h4>
+        <p>Share internships, scholarships, and career-building resources with your mentees.</p>
+      </div>
     </div>
   </div>
 </section>
