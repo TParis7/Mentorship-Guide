@@ -1,6 +1,6 @@
 (function() {
   /* ══════════════════════════════════════════════════════════════
-     mg-combined.js v1.1.0 — Mentorship Guide page injection.
+     mg-combined.js v1.2.0 — Mentorship Guide page injection.
      Strategy: hide Webflow's native V2 Nav Light + Footer V2 (the
      Mentor Guide HTML ships with its own self-contained chrome), then
      inject the entire Mentorship Guide HTML/CSS into a scoped #mg-root.
@@ -37,6 +37,9 @@
   var SHOT_MILESTONES = SHOT_BASE + 'Connect.jpeg';
   var SHOT_GUIDE = SHOT_BASE + 'Questions.jpeg';
   var SHOT_OPPORTUNITIES = SHOT_BASE + 'Opportunity.jpeg';
+  var SHOT_MENTOR = SHOT_BASE + 'Mentor.jpg';
+  var SHOT_MENTEE = SHOT_BASE + 'Mentee.jpg';
+  var SHOT_PORTAL = SHOT_BASE + 'MentorPortal.png';
 
   // Partner logos (hosted with Mentor Page Redesign repo — same set as homepage)
   var LOGO_BASE = 'https://tparis7.github.io/Mentor-Page-Redesign/logos/';
@@ -56,7 +59,8 @@
   // Expectation tile icons (for "New to Mentorship" 6 cards)
   var svgMic = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="32" y="14" width="16" height="30" rx="8" fill="#B91C1C"/><path d="M22 38a18 18 0 0 0 36 0M40 56v8M30 64h20" stroke="#B91C1C" stroke-width="4" stroke-linecap="round"/></svg>';
   var svgSpeak = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 28c0-3 2-5 5-5h42c3 0 5 2 5 5v24c0 3-2 5-5 5H34l-12 10V57h-3c-3 0-5-2-5-5V28z" stroke="#4F46E5" stroke-width="4" stroke-linejoin="round"/><path d="M26 36h28M26 44h20" stroke="#4F46E5" stroke-width="3" stroke-linecap="round"/></svg>';
-  var svgShake = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 38l8-8 8 6 8-4 14 14-4 6-8-4-6 6-10-6-10-10z" fill="#059669" opacity=".2"/><path d="M26 28l6 6M40 34l10 10 6-2M32 44l10 10 6-2M22 38l8-8 8 6 8-4 14 14-4 6-8-4-6 6-10-6-10-10z" stroke="#059669" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  // Open book / journal icon (for "Share real experiences, successes and failures")
+  var svgShake = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 22c4-2 10-3 14-3s10 1 12 4c2-3 8-4 12-4s10 1 14 3v36c-4-2-10-3-14-3s-10 1-12 4c-2-3-8-4-12-4s-10 1-14 3V22z" fill="#059669" opacity=".18"/><path d="M14 22c4-2 10-3 14-3s10 1 12 4c2-3 8-4 12-4s10 1 14 3v36c-4-2-10-3-14-3s-10 1-12 4c-2-3-8-4-12-4s-10 1-14 3V22z" stroke="#059669" stroke-width="3.5" stroke-linejoin="round"/><path d="M40 23v36" stroke="#059669" stroke-width="3"/><path d="M20 30h12M20 38h12M20 46h10M48 30h12M48 38h12M48 46h10" stroke="#059669" stroke-width="2.5" stroke-linecap="round"/></svg>';
   var svgLightbulb = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M40 14a16 16 0 0 1 10 28v8H30v-8a16 16 0 0 1 10-28z" fill="#D97706" opacity=".2"/><path d="M40 14a16 16 0 0 1 10 28v8H30v-8a16 16 0 0 1 10-28z" stroke="#D97706" stroke-width="4" stroke-linejoin="round"/><path d="M32 58h16M34 64h12" stroke="#D97706" stroke-width="3.5" stroke-linecap="round"/></svg>';
   var svgFilm = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="20" width="48" height="40" rx="4" stroke="#EC4899" stroke-width="4"/><path d="M22 20v40M58 20v40" stroke="#EC4899" stroke-width="3"/><circle cx="22" cy="30" r="2" fill="#EC4899"/><circle cx="22" cy="50" r="2" fill="#EC4899"/><circle cx="58" cy="30" r="2" fill="#EC4899"/><circle cx="58" cy="50" r="2" fill="#EC4899"/><polygon points="35,32 35,48 50,40" fill="#EC4899"/></svg>';
   var svgMegaphone = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 34v12a4 4 0 0 0 4 4h4v10h8V50l26 8V26L32 34H20a4 4 0 0 0-4 4z" fill="#0891B2" opacity=".2"/><path d="M16 34v12a4 4 0 0 0 4 4h4v10h8V50l26 8V26L32 34H20a4 4 0 0 0-4 4z" stroke="#0891B2" stroke-width="4" stroke-linejoin="round"/></svg>';
@@ -111,6 +115,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 /* ─── NAV ─── */
 #mg-root .nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--mg-gray-200); padding: 0 20px; }
 #mg-root .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+#mg-root .nav-logo-link { display: inline-flex; align-items: center; line-height: 0; }
 #mg-root .nav-logo { height: 36px; width: auto; }
 #mg-root .nav-links { display: flex; gap: 6px; align-items: center; }
 #mg-root .nav-links a { text-decoration: none; color: var(--mg-gray-700); font-size: 14px; font-weight: 500; padding: 6px 12px; border-radius: 8px; transition: var(--mg-transition); }
@@ -131,7 +136,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 500; margin-bottom: 16px; line-height: 1.2; color: var(--mg-white); letter-spacing: -0.01em; }
 #mg-root .hero p { font-size: clamp(15px, 2.5vw, 18px); opacity: 0.85; max-width: 600px; margin: 0 auto 28px; color: var(--mg-white); }
 #mg-root .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-#mg-root .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; transition: var(--mg-transition); cursor: pointer; border: none; }
+#mg-root .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; line-height: 1.2; letter-spacing: 0; text-decoration: none; transition: var(--mg-transition); cursor: pointer; border: none; }
 #mg-root .btn-primary { background: var(--mg-white); color: var(--mg-crimson); }
 #mg-root .btn-primary:hover { background: var(--mg-gray-100); transform: translateY(-1px); }
 #mg-root .btn-outline { background: transparent; color: var(--mg-white); border: 1.5px solid rgba(255,255,255,0.4); }
@@ -201,7 +206,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .screens-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 #mg-root .screen-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius); padding: 10px; text-align: center; transition: var(--mg-transition); overflow: hidden; }
 #mg-root .screen-card:hover { box-shadow: var(--mg-shadow-md); border-color: var(--mg-crimson); transform: translateY(-2px); }
-#mg-root .screen-shot { width: 100%; aspect-ratio: 9 / 16; max-height: 300px; object-fit: cover; border-radius: 10px; display: block; }
+#mg-root .screen-shot { width: 100%; aspect-ratio: 9 / 16; max-height: 300px; object-fit: cover; object-position: top; border-radius: 10px; display: block; }
 
 /* ─── STEPS ─── */
 #mg-root .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: step; }
@@ -262,7 +267,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .tab-panel.active { display: block; }
 
 /* ─── MENTEE QUESTIONS ─── */
-#mg-root .mq-categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+#mg-root .mq-categories-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
 #mg-root .mq-category-card { background: var(--mg-white); border: 2px solid var(--mg-gray-200); border-radius: var(--mg-radius); padding: 10px 10px 12px; cursor: pointer; transition: var(--mg-transition); text-align: center; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
 #mg-root .mq-category-card:hover { border-color: var(--mg-crimson); box-shadow: var(--mg-shadow-md); transform: translateY(-2px); }
 #mg-root .mq-category-card.active { border-color: var(--mg-crimson); background: rgba(217,58,58,0.03); }
@@ -295,7 +300,20 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .pathway-card .pw-arrow { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--mg-crimson); transition: var(--mg-transition); letter-spacing: 0.3px; }
 #mg-root .pathway-card:hover .pw-arrow { transform: translateX(3px); }
 
+/* ─── RESPONSIBILITY PATHWAY CARDS (pathway-style with photo hero) ─── */
+#mg-root .resp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 18px; }
+#mg-root .resp-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius-lg); overflow: hidden; transition: var(--mg-transition); display: flex; flex-direction: column; box-shadow: var(--mg-shadow-sm); }
+#mg-root .resp-card:hover { box-shadow: var(--mg-shadow-md); transform: translateY(-3px); border-color: var(--mg-crimson); }
+#mg-root .resp-photo { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: center; display: block; }
+#mg-root .resp-card.resp-mentor { border-top: 3px solid var(--mg-crimson); }
+#mg-root .resp-card.resp-mentee { border-top: 3px solid var(--mg-accent-gold); }
+#mg-root .resp-body { padding: 18px 22px 22px; }
+#mg-root .resp-body h3 { font-size: 18px; font-weight: 700; color: var(--mg-dark); margin-bottom: 12px; }
+#mg-root .resp-body ul { list-style: disc; padding-left: 18px; margin: 0; }
+#mg-root .resp-body li { font-size: 14px; color: var(--mg-gray-700); line-height: 1.55; margin-bottom: 6px; }
+
 /* ─── EXPECTATION TILE CARDS (New to Mentorship — icon tiles like FM get-started) ─── */
+/* NOTE: expect-grid now sits outside .max-w-800 so its cards match pathway-card width */
 #mg-root .mg-expect-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
 #mg-root .mg-expect-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius-lg); overflow: hidden; transition: var(--mg-transition); display: flex; flex-direction: column; }
 #mg-root .mg-expect-card:hover { box-shadow: var(--mg-shadow-md); border-color: var(--mg-crimson); transform: translateY(-2px); }
@@ -317,6 +335,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 /* ─── GET DISCOVERED PORTAL (ports fm-portal) ─── */
 #mg-root .mg-portal-section { padding: 44px 20px; background: linear-gradient(180deg, #fafbfd 0%, #fff 100%); }
 #mg-root .mg-portal-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 44px; align-items: center; max-width: 1160px; margin: 0 auto; }
+#mg-root .mg-portal-image { width: 100%; height: auto; border-radius: 16px; box-shadow: var(--mg-shadow-md); border: 1px solid var(--mg-gray-200); display: block; }
 #mg-root .mg-portal-preview { background: linear-gradient(135deg, #f0f0f0, #e8e4e0); border-radius: 16px; overflow: hidden; box-shadow: var(--mg-shadow-md); border: 1px solid var(--mg-gray-200); }
 #mg-root .mg-portal-bar { background: linear-gradient(180deg, #e8e8ec, #d4d4d8); padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(0,0,0,0.06); }
 #mg-root .mg-portal-dots { display: flex; gap: 5px; }
@@ -398,6 +417,16 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .resource-info h4 { font-size: 14px; font-weight: 500; line-height: 1.3; }
 #mg-root .resource-info span { font-size: 11px; color: var(--mg-gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
 #mg-root .resource-count { text-align: center; color: var(--mg-gray-600); font-size: 14px; margin-top: 10px; }
+
+/* ─── COLLAPSIBLE DETAILS (Additional Learning Resources) ─── */
+#mg-root details.mg-collapsible { border: 1px solid rgba(255,255,255,0.15); border-radius: var(--mg-radius); overflow: hidden; background: rgba(255,255,255,0.04); margin-top: 20px; }
+#mg-root details.mg-collapsible > summary { list-style: none; cursor: pointer; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 600; color: var(--mg-white); transition: var(--mg-transition); }
+#mg-root details.mg-collapsible > summary::-webkit-details-marker { display: none; }
+#mg-root details.mg-collapsible > summary:hover { background: rgba(255,255,255,0.08); }
+#mg-root details.mg-collapsible > summary::after { content: '+'; font-size: 22px; font-weight: 300; color: rgba(255,255,255,0.85); transition: transform var(--mg-transition); line-height: 1; }
+#mg-root details.mg-collapsible[open] > summary::after { content: '−'; color: var(--mg-crimson); }
+#mg-root details.mg-collapsible[open] > summary { border-bottom: 1px solid rgba(255,255,255,0.12); }
+#mg-root details.mg-collapsible .mg-collapsible-body { padding: 16px 20px 20px; overflow-x: auto; }
 
 /* ─── ADDL TABLE ─── */
 #mg-root .addl-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: var(--mg-radius); overflow: hidden; border: 1px solid var(--mg-gray-200); }
@@ -512,6 +541,14 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   #mg-root .mg-expect-tile svg { width: 36px; height: 36px; }
   #mg-root .mg-expect-body { padding: 10px 10px 12px; }
   #mg-root .mg-expect-body p { font-size: 12px; }
+
+  #mg-root .resp-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
+  #mg-root .resp-body { padding: 14px 16px 16px; }
+  #mg-root .resp-body h3 { font-size: 16px; margin-bottom: 8px; }
+  #mg-root .resp-body li { font-size: 13px; margin-bottom: 4px; }
+
+  #mg-root details.mg-collapsible > summary { padding: 12px 14px; font-size: 13px; }
+  #mg-root details.mg-collapsible .mg-collapsible-body { padding: 10px 12px 14px; }
 
   #mg-root .mg-portal-section { padding: 24px 16px; }
   #mg-root .mg-portal-grid { grid-template-columns: 1fr; gap: 22px; }
@@ -648,7 +685,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-inner">
-    <img src="${LOGO}" alt="P3 Logo" class="nav-logo">
+    <a href="/" class="nav-logo-link" aria-label="Pulse of P3 home"><img src="${LOGO}" alt="P3 Logo" class="nav-logo"></a>
     <div class="nav-links">
       <a href="#welcome">Welcome</a>
       <a href="#getting-started">Get Started</a>
@@ -726,38 +763,19 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 </section>
 
 <!-- MENTORSHIP FOR THE NEXT GENERATION -->
-<section class="section" id="welcome-section">
-  <div class="section-header">
+<section class="section" id="welcome-section" style="padding-top: 20px; padding-bottom: 12px;">
+  <div class="section-header" style="text-align: left; margin-bottom: 10px;">
     <span class="section-label">Welcome</span>
-    <h2>Mentorship for the Next Generation</h2>
+    <h2 style="text-align: left;">Mentorship for the Next Generation</h2>
   </div>
 
   <div class="fade-up">
-    <div class="welcome-layout">
+    <div class="welcome-layout" style="align-items: flex-start;">
       <div>
         <p style="font-size: 14px; color: var(--mg-gray-700); line-height: 1.5; margin-bottom: 12px;">Welcome to the Pulse of Perseverance Mentorship Community! We are honored to have you join a network of passionate professionals dedicated to helping young people of color access pathways to opportunity. This handbook is your roadmap to success as a P3 mentor whether this is your first mentoring experience or your fifteenth: your voice matters here.</p>
-        <p style="font-size: 14px; color: var(--mg-gray-700); line-height: 1.5; margin-bottom: 14px;">Our new mobile app connects students with experienced mentors through an engaging, accessible, and culturally relevant experience. Founded by three Black doctors who personally navigated their own journeys from underserved backgrounds to professional success, P3 ensures that our initiatives don't just serve disadvantaged communities &mdash; they are built, led, and continuously shaped by them.</p>
-        <div style="background: linear-gradient(135deg, var(--mg-crimson), var(--mg-maroon)); border-radius: 10px; padding: 14px 16px; color: white; display: flex; gap: 14px; align-items: flex-start;">
-          <svg width="38" height="38" viewBox="0 0 100 100" fill="none" style="flex-shrink: 0;">
-            <rect x="32" y="12" width="36" height="76" rx="4" stroke="white" stroke-width="6" fill="none"/>
-            <circle cx="18" cy="50" r="10" fill="white" opacity="0.9"/>
-            <circle cx="12" cy="30" r="5" fill="white" opacity="0.6"/>
-            <circle cx="22" cy="72" r="6" fill="white" opacity="0.7"/>
-            <circle cx="8" cy="62" r="4" fill="white" opacity="0.5"/>
-            <circle cx="60" cy="38" r="7" fill="white" opacity="0.8"/>
-            <circle cx="72" cy="55" r="9" fill="white" opacity="0.9"/>
-            <circle cx="80" cy="35" r="5" fill="white" opacity="0.6"/>
-            <circle cx="88" cy="65" r="7" fill="white" opacity="0.7"/>
-            <circle cx="55" cy="65" r="5" fill="white" opacity="0.6"/>
-          </svg>
-          <div>
-          <p style="font-size: 13px; font-weight: 600; margin-bottom: 3px; color: white;">National Mentor Portal</p>
-          <p style="font-size: 12px; margin-bottom: 8px; color: rgba(255,255,255,0.85); line-height: 1.4;">View, share, and manage your public mentor profile.</p>
-          <a href="https://mentors.pulseofp3.org" target="_blank" rel="noopener" style="display: inline-block; background: white; color: var(--mg-crimson); font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: 6px; text-decoration: none;">mentors.pulseofp3.org &rarr;</a>
-          </div>
-        </div>
+        <p style="font-size: 14px; color: var(--mg-gray-700); line-height: 1.5;">Our new mobile app connects students with experienced mentors through an engaging, accessible, and culturally relevant experience. Founded by three Black doctors who personally navigated their own journeys from underserved backgrounds to professional success, P3 ensures that our initiatives don't just serve disadvantaged communities &mdash; they are built, led, and continuously shaped by them.</p>
       </div>
-      <div style="display: flex; align-items: center; justify-content: center;">
+      <div style="display: flex; align-items: flex-start; justify-content: center;">
         <img src="${IPHONE_MOCKUP}" alt="P3 Mobile App" class="app-mockup">
       </div>
     </div>
@@ -772,8 +790,8 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
       <h2>New to Mentorship?</h2>
       <p>Mentorship is a trusted relationship in which a more experienced individual provides guidance, knowledge, support, and encouragement.</p>
     </div>
-    <div class="max-w-800 fade-up">
-      <p style="font-size:15px; color:var(--mg-gray-700); margin-bottom:18px;">Mentees bring energy, insight, and questions. In many cases, you may learn from them as well. Mentorship is about walking alongside someone &mdash; not directing their path, but illuminating it. We honor the lived experience of all mentors. Whether you're an executive or early-career professional, your journey matters.</p>
+    <div class="fade-up">
+      <p style="font-size:15px; color:var(--mg-gray-700); margin-bottom:18px; max-width: 800px; margin-left: auto; margin-right: auto; text-align: center;">Mentees bring energy, insight, and questions. In many cases, you may learn from them as well. Mentorship is about walking alongside someone &mdash; not directing their path, but illuminating it. We honor the lived experience of all mentors. Whether you're an executive or early-career professional, your journey matters.</p>
 
       <div class="mg-expect-grid">
         <div class="mg-expect-card">
@@ -802,27 +820,33 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
         </div>
       </div>
 
-      <div class="card-grid card-grid-2">
-        <div class="card" style="border-top: 3px solid var(--mg-crimson);">
-          <h3>Your Responsibilities</h3>
-          <ul style="font-size:14px; color:var(--mg-gray-700); padding-left:18px; margin-top:6px;">
-            <li>Support their development with feedback and advice</li>
-            <li>Respond to mentee questions via the P3 app</li>
-            <li>Encourage self-reflection and independence</li>
-            <li>Offer insight into your career and field</li>
-            <li>Maintain trust and confidentiality</li>
-            <li>Add relevant opportunities to keep them engaged</li>
-          </ul>
+      <div class="resp-grid">
+        <div class="resp-card resp-mentor">
+          <img class="resp-photo" src="${SHOT_MENTOR}" alt="P3 mentor" loading="lazy">
+          <div class="resp-body">
+            <h3>Your Responsibilities</h3>
+            <ul>
+              <li>Support their development with feedback and advice</li>
+              <li>Respond to mentee questions via the P3 app</li>
+              <li>Encourage self-reflection and independence</li>
+              <li>Offer insight into your career and field</li>
+              <li>Maintain trust and confidentiality</li>
+              <li>Add relevant opportunities to keep them engaged</li>
+            </ul>
+          </div>
         </div>
-        <div class="card" style="border-top: 3px solid var(--mg-accent-gold);">
-          <h3>Mentee Responsibilities</h3>
-          <ul style="font-size:14px; color:var(--mg-gray-700); padding-left:18px; margin-top:6px;">
-            <li>Come prepared with questions and goals</li>
-            <li>Accept feedback with openness</li>
-            <li>Take ownership of their growth</li>
-            <li>Follow through on action steps</li>
-            <li>Select &amp; request connections on the P3 app</li>
-          </ul>
+        <div class="resp-card resp-mentee">
+          <img class="resp-photo" src="${SHOT_MENTEE}" alt="P3 mentee" loading="lazy">
+          <div class="resp-body">
+            <h3>Mentee Responsibilities</h3>
+            <ul>
+              <li>Come prepared with questions and goals</li>
+              <li>Accept feedback with openness</li>
+              <li>Take ownership of their growth</li>
+              <li>Follow through on action steps</li>
+              <li>Select &amp; request connections on the P3 app</li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -903,32 +927,13 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   </div>
 </section>
 
-<!-- GET DISCOVERED PORTAL -->
+<!-- NATIONAL MENTOR PORTAL -->
 <section class="mg-portal-section">
   <div class="mg-portal-grid">
-    <div class="mg-portal-preview">
-      <div class="mg-portal-bar">
-        <div class="mg-portal-dots"><span></span><span></span><span></span></div>
-        <div class="mg-portal-url">mentors.pulseofp3.org</div>
-      </div>
-      <div class="mg-portal-cards">
-        <div class="mg-portal-card">
-          <div class="mg-portal-avatar">TP</div>
-          <div class="mg-portal-info"><strong>Thomas Paris</strong><span>COO · Pulse of P3</span></div>
-        </div>
-        <div class="mg-portal-card">
-          <div class="mg-portal-avatar">AE</div>
-          <div class="mg-portal-info"><strong>Alfred Edmond</strong><span>SVP · Black Enterprise</span></div>
-        </div>
-        <div class="mg-portal-card">
-          <div class="mg-portal-avatar">AK</div>
-          <div class="mg-portal-info"><strong>Arthur Kenard Killingsworth</strong><span>Product Leader · Google</span></div>
-        </div>
-      </div>
-    </div>
+    <img class="mg-portal-image" src="${SHOT_PORTAL}" alt="National Mentor Portal — mentors.pulseofp3.org" loading="lazy">
     <div class="mg-portal-text">
       <span class="mg-portal-eyebrow">National Mentor Portal</span>
-      <h3>Get discovered by students nationwide</h3>
+      <h3>Share your National Mentor Profile</h3>
       <p>Your public mentor profile at mentors.pulseofp3.org lets students find you through our smart-match engine &mdash; and gives you a shareable link to amplify your impact.</p>
       <div class="mg-portal-features">
         <div class="mg-pf-row">
@@ -1144,15 +1149,17 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   <div class="resource-count" id="mg-resourceCount"></div>
 </section></div>
 
-<!-- ADDITIONAL MENTOR RESOURCES -->
+<!-- ADDITIONAL LEARNING RESOURCES -->
 <div class="section-maroon"><section class="section">
   <div class="section-header">
     <span class="section-label">Mentor Toolkit</span>
-    <h2>Additional Mentor Resources</h2>
+    <h2>Additional Learning Resources</h2>
     <p>Materials designed to support the personal and professional growth of P3 mentors.</p>
   </div>
 
-  <div style="overflow-x: auto; margin-top: 24px;">
+  <details class="mg-collapsible">
+    <summary><span>View resources</span></summary>
+    <div class="mg-collapsible-body">
     <table class="addl-table">
       <thead><tr><th>Resource</th><th>Description</th></tr></thead>
       <tbody>
@@ -1175,7 +1182,8 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
         <tr><td><a href="https://www.pulseofp3.org" target="_blank" rel="noopener">P3 Mobile App</a></td><td>Overview of the mobile app UX for mentors and mentees.</td></tr>
       </tbody>
     </table>
-  </div>
+    </div>
+  </details>
 </section></div>
 
 <!-- FAQ -->
