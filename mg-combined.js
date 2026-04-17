@@ -1,6 +1,6 @@
 (function() {
   /* ══════════════════════════════════════════════════════════════
-     mg-combined.js v1.3.2 — Mentorship Guide page injection.
+     mg-combined.js v1.3.3 — Mentorship Guide page injection.
      Strategy: hide Webflow's native V2 Nav Light + Footer V2 (the
      Mentor Guide HTML ships with its own self-contained chrome), then
      inject the entire Mentorship Guide HTML/CSS into a scoped #mg-root.
@@ -643,13 +643,13 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   /* v1.3.2 — Mobile: hide desktop "How Mobile App Works" split layout, show interleaved mobile layout */
   #mg-root #getting-started .screens-grid { display: none; }
   #mg-root #getting-started .steps { display: none; }
-  #mg-root .mas-mobile { display: flex; flex-direction: column; gap: 22px; margin-top: 14px; }
-  #mg-root .mas-mobile .mas-item { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-  #mg-root .mas-mobile .mas-shot { width: 100%; max-width: 220px; aspect-ratio: 9/16; object-fit: cover; object-position: top; border-radius: 12px; border: 1px solid var(--mg-gray-200); background: var(--mg-white); padding: 8px; box-sizing: border-box; display: block; }
-  #mg-root .mas-mobile .mas-step { text-align: center; max-width: 320px; }
-  #mg-root .mas-mobile .mas-step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--mg-crimson); color: var(--mg-white); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; margin: 0 auto 6px; }
-  #mg-root .mas-mobile .mas-step h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--mg-dark); }
-  #mg-root .mas-mobile .mas-step p { font-size: 12px; color: var(--mg-gray-600); line-height: 1.4; }
+  #mg-root .mas-mobile { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 10px; margin-top: 14px; }
+  #mg-root .mas-mobile .mas-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  #mg-root .mas-mobile .mas-shot { width: 100%; max-width: 160px; aspect-ratio: 9/16; object-fit: cover; object-position: top; border-radius: 10px; border: 1px solid var(--mg-gray-200); background: var(--mg-white); padding: 6px; box-sizing: border-box; display: block; }
+  #mg-root .mas-mobile .mas-step { text-align: center; }
+  #mg-root .mas-mobile .mas-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--mg-crimson); color: var(--mg-white); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; margin: 0 auto 4px; }
+  #mg-root .mas-mobile .mas-step h4 { font-size: 13px; font-weight: 600; margin-bottom: 3px; color: var(--mg-dark); line-height: 1.25; }
+  #mg-root .mas-mobile .mas-step p { font-size: 11px; color: var(--mg-gray-600); line-height: 1.35; }
 
   /* v1.3.2 — Mobile: center "Share Your National Mentor Profile" section (desktop stays left) */
   #mg-root .mg-portal-text { text-align: center; }
@@ -722,6 +722,13 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   #mg-root .filter-btn { font-size: 9px; padding: 4px 6px; }
 
   #mg-root .addl-table th, #mg-root .addl-table td { padding: 6px 6px; font-size: 10px; }
+
+  /* v1.3.3: mas-mobile 2x2 still fits ≤400px — tighten */
+  #mg-root .mas-mobile { gap: 14px 8px; }
+  #mg-root .mas-mobile .mas-shot { max-width: 130px; padding: 4px; }
+  #mg-root .mas-mobile .mas-step-num { width: 24px; height: 24px; font-size: 12px; }
+  #mg-root .mas-mobile .mas-step h4 { font-size: 12px; }
+  #mg-root .mas-mobile .mas-step p { font-size: 10px; }
 
   /* 400px: resp photo + engagement tighter */
   #mg-root .resp-photo { height: 100px; }
