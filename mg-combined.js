@@ -1,6 +1,6 @@
 (function() {
   /* ══════════════════════════════════════════════════════════════
-     mg-combined.js v1.0.0 — Mentorship Guide page injection.
+     mg-combined.js v1.1.0 — Mentorship Guide page injection.
      Strategy: hide Webflow's native V2 Nav Light + Footer V2 (the
      Mentor Guide HTML ships with its own self-contained chrome), then
      inject the entire Mentorship Guide HTML/CSS into a scoped #mg-root.
@@ -30,6 +30,41 @@
   var LOGO = 'https://cdn.prod.website-files.com/69b02f65f0068e9fb16f09f7/69b04a49d86c8d9ea145304a_p3-logo-horizontal.png';
   var HERO_VIDEO = 'https://cdn.prod.website-files.com/69b02f65f0068e9fb16f09f7%2F69b04a6712d5fdbe9b4e51f8_p3-hero-bg_mp4.mp4';
   var IPHONE_MOCKUP = 'https://cdn.prod.website-files.com/69b02f65f0068e9fb16f09f7/69b04a4965cafd702dffba43_iphone-mockup-v2.png';
+
+  // App screenshots (hosted in tparis7/Mentorship-Guide GitHub repo root)
+  var SHOT_BASE = 'https://tparis7.github.io/Mentorship-Guide/';
+  var SHOT_VIDEOS = SHOT_BASE + 'Video-collage.jpeg';
+  var SHOT_MILESTONES = SHOT_BASE + 'Connect.jpeg';
+  var SHOT_GUIDE = SHOT_BASE + 'Questions.jpeg';
+  var SHOT_OPPORTUNITIES = SHOT_BASE + 'Opportunity.jpeg';
+
+  // Partner logos (hosted with Mentor Page Redesign repo — same set as homepage)
+  var LOGO_BASE = 'https://tparis7.github.io/Mentor-Page-Redesign/logos/';
+
+  // ═══ 1b. SVG ICON LIBRARY — scoped for pathway + expectation tiles ═══
+  // Each icon is 80x80, with a filled/stroked style matching the FM get-started look.
+  var svgExec = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="28" r="12" fill="#B91C1C"/><path d="M20 62c0-11 9-18 20-18s20 7 20 18" stroke="#B91C1C" stroke-width="4" stroke-linecap="round"/><path d="M32 28l4 4 8-8" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var svgTech = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="18" width="52" height="38" rx="4" stroke="#4F46E5" stroke-width="4"/><path d="M28 68h24" stroke="#4F46E5" stroke-width="4" stroke-linecap="round"/><path d="M40 56v12" stroke="#4F46E5" stroke-width="4"/><path d="M28 32l-6 5 6 5M52 32l6 5-6 5M44 30l-8 14" stroke="#4F46E5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var svgHealth = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M40 64s-22-12-22-28a12 12 0 0 1 22-7 12 12 0 0 1 22 7c0 16-22 28-22 28z" fill="#E11D48" opacity=".2"/><path d="M40 64s-22-12-22-28a12 12 0 0 1 22-7 12 12 0 0 1 22 7c0 16-22 28-22 28z" stroke="#E11D48" stroke-width="4" stroke-linejoin="round"/><path d="M40 36v10M35 41h10" stroke="#E11D48" stroke-width="3" stroke-linecap="round"/></svg>';
+  var svgLegal = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M40 14v50M22 64h36" stroke="#475569" stroke-width="4" stroke-linecap="round"/><path d="M16 32h20l-10 16c0 3 5 5 10 5s10-2 10-5L36 32M44 32h20l-10 16c0 3 5 5 10 5s10-2 10-5L64 32" stroke="#475569" stroke-width="3.5" stroke-linejoin="round" fill="none"/></svg>';
+  var svgBank = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 30l28-14 28 14" stroke="#059669" stroke-width="4" stroke-linejoin="round"/><path d="M14 30h52v6H14z" fill="#059669"/><path d="M20 40v18M32 40v18M48 40v18M60 40v18" stroke="#059669" stroke-width="4" stroke-linecap="round"/><path d="M14 64h52v4H14z" fill="#059669"/></svg>';
+  var svgBiz = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="20" width="48" height="46" rx="3" stroke="#D97706" stroke-width="4"/><path d="M24 50l8-8 6 6 12-14" stroke="#D97706" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="34" r="3" fill="#D97706"/><path d="M30 58h20" stroke="#D97706" stroke-width="3" stroke-linecap="round"/></svg>';
+  var svgEdu = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 30l32-14 32 14-32 14L8 30z" fill="#0EA5E9" opacity=".25"/><path d="M8 30l32-14 32 14-32 14L8 30z" stroke="#0EA5E9" stroke-width="3.5" stroke-linejoin="round"/><path d="M22 38v14c0 4 8 8 18 8s18-4 18-8V38" stroke="#0EA5E9" stroke-width="3.5" stroke-linejoin="round"/><path d="M68 30v16" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round"/></svg>';
+  var svgSports = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="22" stroke="#EC4899" stroke-width="4"/><path d="M40 18v44M18 40h44M25 25l30 30M55 25L25 55" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/></svg>';
+  var svgIT = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M40 14v10M40 56v10M14 40h10M56 40h10M22 22l7 7M51 51l7 7M22 58l7-7M51 29l7-7" stroke="#0891B2" stroke-width="3.5" stroke-linecap="round"/><circle cx="40" cy="40" r="10" stroke="#0891B2" stroke-width="4"/><circle cx="40" cy="40" r="3" fill="#0891B2"/></svg>';
+
+  // Expectation tile icons (for "New to Mentorship" 6 cards)
+  var svgMic = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="32" y="14" width="16" height="30" rx="8" fill="#B91C1C"/><path d="M22 38a18 18 0 0 0 36 0M40 56v8M30 64h20" stroke="#B91C1C" stroke-width="4" stroke-linecap="round"/></svg>';
+  var svgSpeak = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 28c0-3 2-5 5-5h42c3 0 5 2 5 5v24c0 3-2 5-5 5H34l-12 10V57h-3c-3 0-5-2-5-5V28z" stroke="#4F46E5" stroke-width="4" stroke-linejoin="round"/><path d="M26 36h28M26 44h20" stroke="#4F46E5" stroke-width="3" stroke-linecap="round"/></svg>';
+  var svgShake = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 38l8-8 8 6 8-4 14 14-4 6-8-4-6 6-10-6-10-10z" fill="#059669" opacity=".2"/><path d="M26 28l6 6M40 34l10 10 6-2M32 44l10 10 6-2M22 38l8-8 8 6 8-4 14 14-4 6-8-4-6 6-10-6-10-10z" stroke="#059669" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var svgLightbulb = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M40 14a16 16 0 0 1 10 28v8H30v-8a16 16 0 0 1 10-28z" fill="#D97706" opacity=".2"/><path d="M40 14a16 16 0 0 1 10 28v8H30v-8a16 16 0 0 1 10-28z" stroke="#D97706" stroke-width="4" stroke-linejoin="round"/><path d="M32 58h16M34 64h12" stroke="#D97706" stroke-width="3.5" stroke-linecap="round"/></svg>';
+  var svgFilm = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="20" width="48" height="40" rx="4" stroke="#EC4899" stroke-width="4"/><path d="M22 20v40M58 20v40" stroke="#EC4899" stroke-width="3"/><circle cx="22" cy="30" r="2" fill="#EC4899"/><circle cx="22" cy="50" r="2" fill="#EC4899"/><circle cx="58" cy="30" r="2" fill="#EC4899"/><circle cx="58" cy="50" r="2" fill="#EC4899"/><polygon points="35,32 35,48 50,40" fill="#EC4899"/></svg>';
+  var svgMegaphone = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 34v12a4 4 0 0 0 4 4h4v10h8V50l26 8V26L32 34H20a4 4 0 0 0-4 4z" fill="#0891B2" opacity=".2"/><path d="M16 34v12a4 4 0 0 0 4 4h4v10h8V50l26 8V26L32 34H20a4 4 0 0 0-4 4z" stroke="#0891B2" stroke-width="4" stroke-linejoin="round"/></svg>';
+
+  // Portal feature mini icons (16px, stroke = currentColor/crimson)
+  var svgGlobe = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>';
+  var svgChat = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  var svgShareSm = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
 
   // ═══ 2. INJECT CSS — scoped to #mg-root with --mg- prefix ═══
   var style = document.createElement('style');
@@ -93,7 +128,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .hero video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
 #mg-root .hero-content { position: relative; z-index: 2; }
 #mg-root .hero-badge { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; margin-bottom: 20px; text-transform: uppercase; color: var(--mg-white); }
-#mg-root .hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 700; margin-bottom: 16px; line-height: 1.15; color: var(--mg-white); }
+#mg-root .hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 500; margin-bottom: 16px; line-height: 1.2; color: var(--mg-white); letter-spacing: -0.01em; }
 #mg-root .hero p { font-size: clamp(15px, 2.5vw, 18px); opacity: 0.85; max-width: 600px; margin: 0 auto 28px; color: var(--mg-white); }
 #mg-root .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 #mg-root .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; transition: var(--mg-transition); cursor: pointer; border: none; }
@@ -102,11 +137,18 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .btn-outline { background: transparent; color: var(--mg-white); border: 1.5px solid rgba(255,255,255,0.4); }
 #mg-root .btn-outline:hover { border-color: var(--mg-white); background: rgba(255,255,255,0.1); }
 
-/* ─── PARTNER TICKER ─── */
-#mg-root .partner-ticker { background: var(--mg-maroon); color: var(--mg-white); padding: 14px 20px; overflow: hidden; position: relative; }
-#mg-root .ticker-content { display: flex; gap: 40px; align-items: center; animation: mg-scroll 20s linear infinite; white-space: nowrap; }
-#mg-root .ticker-item { font-size: 14px; font-weight: 600; letter-spacing: 0.5px; flex-shrink: 0; }
-@keyframes mg-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+/* ─── LOGO CAROUSEL (replaces text ticker; mirrors homepage lc-*) ─── */
+#mg-root .lc-section { padding: 28px 0; background: var(--mg-white); border-bottom: 1px solid var(--mg-gray-200); overflow: hidden; }
+#mg-root .lc-label { text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: var(--mg-gray-600); margin-bottom: 18px; }
+#mg-root .lc-wrap { position: relative; overflow: hidden; }
+#mg-root .lc-track { display: flex; gap: 48px; animation: mg-lc-s 30s linear infinite; width: max-content; align-items: center; }
+#mg-root .lc-track:hover { animation-play-state: paused; }
+#mg-root .lc-track img { flex-shrink: 0; opacity: 0.7; filter: grayscale(100%); transition: all var(--mg-transition); }
+#mg-root .lc-track img:hover { opacity: 1; filter: grayscale(0); }
+#mg-root .lc-fl, #mg-root .lc-fr { position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none; }
+#mg-root .lc-fl { left: 0; background: linear-gradient(90deg, var(--mg-white), transparent); }
+#mg-root .lc-fr { right: 0; background: linear-gradient(-90deg, var(--mg-white), transparent); }
+@keyframes mg-lc-s { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* ─── SECTION ─── */
 #mg-root .section { padding: 24px 20px; max-width: 1100px; margin: 0 auto; }
@@ -155,14 +197,11 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .card ul { margin: 0; padding-left: 16px; list-style: disc; }
 #mg-root .card li { font-size: 13px; color: var(--mg-gray-700); margin-bottom: 3px; line-height: 1.4; }
 
-/* ─── SCREENS GRID ─── */
-#mg-root .screens-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-#mg-root .screen-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius); padding: 16px; text-align: center; transition: var(--mg-transition); }
-#mg-root .screen-card:hover { box-shadow: var(--mg-shadow-md); border-color: var(--mg-crimson); }
-#mg-root .screen-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
-#mg-root .screen-preview { border-radius: 10px; padding: 20px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 140px; margin-bottom: 8px; }
-#mg-root .screen-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-#mg-root .screen-card p { font-size: 11px; color: var(--mg-gray-600); }
+/* ─── SCREENS GRID (app screenshots) ─── */
+#mg-root .screens-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+#mg-root .screen-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius); padding: 10px; text-align: center; transition: var(--mg-transition); overflow: hidden; }
+#mg-root .screen-card:hover { box-shadow: var(--mg-shadow-md); border-color: var(--mg-crimson); transform: translateY(-2px); }
+#mg-root .screen-shot { width: 100%; aspect-ratio: 9 / 16; max-height: 300px; object-fit: cover; border-radius: 10px; display: block; }
 
 /* ─── STEPS ─── */
 #mg-root .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: step; }
@@ -172,15 +211,19 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .step h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
 #mg-root .step p { font-size: 13px; color: var(--mg-gray-600); }
 
-/* ─── TIMELINE ─── */
-#mg-root .timeline-h { display: flex; align-items: flex-start; justify-content: center; gap: 0; margin: 0 auto; max-width: 900px; }
-#mg-root .tl-step { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 0 0 auto; width: 140px; }
-#mg-root .tl-dot { width: 48px; height: 48px; border-radius: 50%; background: var(--mg-crimson); color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 3px 12px rgba(217,58,58,0.3); }
-#mg-root .tl-label { margin-top: 10px; }
-#mg-root .tl-label strong { display: block; font-size: 13px; margin-bottom: 2px; }
-#mg-root .tl-label span { display: block; font-size: 11px; color: var(--mg-gray-600); line-height: 1.3; }
-#mg-root .tl-label em { display: block; font-size: 10px; color: var(--mg-crimson); font-weight: 600; font-style: normal; margin-top: 3px; }
-#mg-root .tl-line { flex: 1; height: 3px; background: linear-gradient(90deg, var(--mg-crimson), var(--mg-maroon)); border-radius: 2px; margin-top: 23px; min-width: 30px; }
+/* ─── TIMELINE (Engagement Journey — prominent) ─── */
+#mg-root .journey-wrap { background: linear-gradient(135deg, #fff 0%, #fdf2f2 100%); border: 2px solid rgba(217,58,58,0.15); border-radius: 20px; padding: 32px 24px 28px; margin-top: 28px; box-shadow: 0 8px 28px rgba(217,58,58,0.08); }
+#mg-root .journey-wrap .journey-eyebrow { display: block; text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: var(--mg-crimson); margin-bottom: 6px; }
+#mg-root .journey-wrap .journey-title { text-align: center; font-size: clamp(20px, 3.2vw, 26px); font-weight: 700; color: var(--mg-dark); margin-bottom: 6px; }
+#mg-root .journey-wrap .journey-sub { text-align: center; font-size: 13px; color: var(--mg-gray-600); margin-bottom: 22px; max-width: 540px; margin-left: auto; margin-right: auto; }
+#mg-root .timeline-h { display: flex; align-items: flex-start; justify-content: center; gap: 0; margin: 0 auto; max-width: 960px; }
+#mg-root .tl-step { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 0 0 auto; width: 170px; }
+#mg-root .tl-dot { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--mg-crimson) 0%, var(--mg-maroon) 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 6px 20px rgba(217,58,58,0.4); border: 3px solid #fff; }
+#mg-root .tl-label { margin-top: 14px; }
+#mg-root .tl-label strong { display: block; font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--mg-dark); }
+#mg-root .tl-label span { display: block; font-size: 12px; color: var(--mg-gray-600); line-height: 1.4; }
+#mg-root .tl-label em { display: inline-block; margin-top: 8px; padding: 5px 12px; background: var(--mg-crimson); color: #fff; font-size: 12px; font-weight: 700; font-style: normal; border-radius: 20px; letter-spacing: 0.3px; box-shadow: 0 2px 8px rgba(217,58,58,0.3); }
+#mg-root .tl-line { flex: 1; height: 4px; background: linear-gradient(90deg, var(--mg-crimson), var(--mg-maroon)); border-radius: 2px; margin-top: 31px; min-width: 24px; opacity: 0.7; }
 
 /* ─── ACCORDION ─── */
 #mg-root .accordion { max-width: 760px; margin: 0 auto; }
@@ -230,15 +273,81 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .mq-questions-list { list-style: none; padding: 0; display: grid; gap: 4px; }
 #mg-root .mq-question-item { background: var(--mg-white); padding: 6px 10px; border-left: 3px solid var(--mg-crimson); border-radius: 0 6px 6px 0; font-size: 13px; color: var(--mg-gray-700); line-height: 1.3; }
 
-/* ─── PATHWAYS ─── */
-#mg-root .pathway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-#mg-root .pathway-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius); padding: 16px; cursor: pointer; transition: var(--mg-transition); position: relative; overflow: hidden; }
-#mg-root .pathway-card:hover { box-shadow: var(--mg-shadow-md); transform: translateY(-2px); border-color: var(--mg-crimson); }
-#mg-root .pathway-card .pw-icon { font-size: 24px; margin-bottom: 6px; display: block; }
-#mg-root .pathway-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
-#mg-root .pathway-card p { font-size: 13px; color: var(--mg-gray-600); }
-#mg-root .pathway-card .pw-arrow { position: absolute; top: 24px; right: 20px; font-size: 18px; color: var(--mg-gray-300); transition: var(--mg-transition); }
-#mg-root .pathway-card:hover .pw-arrow { color: var(--mg-crimson); transform: translateX(3px); }
+/* ─── PATHWAYS (3x3 grid on desktop, icon-tile like FM get-started) ─── */
+#mg-root .pathway-helper { text-align: center; font-size: 13px; color: var(--mg-gray-600); margin-bottom: 16px; font-style: italic; }
+#mg-root .pathway-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+#mg-root .pathway-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius-lg); overflow: hidden; cursor: pointer; transition: var(--mg-transition); position: relative; display: flex; flex-direction: column; }
+#mg-root .pathway-card:hover { box-shadow: var(--mg-shadow-md); transform: translateY(-3px); border-color: var(--mg-crimson); }
+#mg-root .pw-tile { height: 110px; display: flex; align-items: center; justify-content: center; }
+#mg-root .pw-tile svg { width: 64px; height: 64px; opacity: 0.95; }
+#mg-root .pw-tile.bg-1 { background: linear-gradient(135deg, #f8e8e8, #f0d4d4); }
+#mg-root .pw-tile.bg-2 { background: linear-gradient(135deg, #e8e8f8, #d4d4f0); }
+#mg-root .pw-tile.bg-3 { background: linear-gradient(135deg, #e8f5e8, #d4ecd4); }
+#mg-root .pw-tile.bg-4 { background: linear-gradient(135deg, #fef3e8, #fde4c8); }
+#mg-root .pw-tile.bg-5 { background: linear-gradient(135deg, #e8f0fb, #d4e4f6); }
+#mg-root .pw-tile.bg-6 { background: linear-gradient(135deg, #fce8f5, #f5d4e8); }
+#mg-root .pw-tile.bg-7 { background: linear-gradient(135deg, #e8f9fb, #d4f0f2); }
+#mg-root .pw-tile.bg-8 { background: linear-gradient(135deg, #f5f2e8, #ebe4d0); }
+#mg-root .pw-tile.bg-9 { background: linear-gradient(135deg, #efefef, #d8d8d8); }
+#mg-root .pathway-card-body { padding: 16px 18px 18px; flex: 1; display: flex; flex-direction: column; }
+#mg-root .pathway-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--mg-dark); }
+#mg-root .pathway-card p { font-size: 13px; color: var(--mg-gray-600); line-height: 1.45; flex: 1; }
+#mg-root .pathway-card .pw-arrow { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--mg-crimson); transition: var(--mg-transition); letter-spacing: 0.3px; }
+#mg-root .pathway-card:hover .pw-arrow { transform: translateX(3px); }
+
+/* ─── EXPECTATION TILE CARDS (New to Mentorship — icon tiles like FM get-started) ─── */
+#mg-root .mg-expect-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+#mg-root .mg-expect-card { background: var(--mg-white); border: 1px solid var(--mg-gray-200); border-radius: var(--mg-radius-lg); overflow: hidden; transition: var(--mg-transition); display: flex; flex-direction: column; }
+#mg-root .mg-expect-card:hover { box-shadow: var(--mg-shadow-md); border-color: var(--mg-crimson); transform: translateY(-2px); }
+#mg-root .mg-expect-tile { height: 90px; display: flex; align-items: center; justify-content: center; }
+#mg-root .mg-expect-tile svg { width: 48px; height: 48px; }
+#mg-root .mg-expect-tile.bg-1 { background: linear-gradient(135deg, #fce8e8, #f5d4d4); }
+#mg-root .mg-expect-tile.bg-2 { background: linear-gradient(135deg, #e4e8f8, #d0d4f0); }
+#mg-root .mg-expect-tile.bg-3 { background: linear-gradient(135deg, #e8f5e8, #d4ecd4); }
+#mg-root .mg-expect-tile.bg-4 { background: linear-gradient(135deg, #fef3e8, #fde4c8); }
+#mg-root .mg-expect-tile.bg-5 { background: linear-gradient(135deg, #fce8f5, #f5d4e8); }
+#mg-root .mg-expect-tile.bg-6 { background: linear-gradient(135deg, #e8f9fb, #d4f0f2); }
+#mg-root .mg-expect-body { padding: 12px 14px 14px; flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; }
+#mg-root .mg-expect-body p { font-size: 13px; font-weight: 500; color: var(--mg-dark); line-height: 1.35; }
+
+/* ─── LOGO CAROUSEL HEIGHTS ─── */
+#mg-root .lc-track img.lc-h32 { height: 32px; }
+#mg-root .lc-track img.lc-h36 { height: 36px; }
+
+/* ─── GET DISCOVERED PORTAL (ports fm-portal) ─── */
+#mg-root .mg-portal-section { padding: 44px 20px; background: linear-gradient(180deg, #fafbfd 0%, #fff 100%); }
+#mg-root .mg-portal-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 44px; align-items: center; max-width: 1160px; margin: 0 auto; }
+#mg-root .mg-portal-preview { background: linear-gradient(135deg, #f0f0f0, #e8e4e0); border-radius: 16px; overflow: hidden; box-shadow: var(--mg-shadow-md); border: 1px solid var(--mg-gray-200); }
+#mg-root .mg-portal-bar { background: linear-gradient(180deg, #e8e8ec, #d4d4d8); padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+#mg-root .mg-portal-dots { display: flex; gap: 5px; }
+#mg-root .mg-portal-dots span { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+#mg-root .mg-portal-dots span:nth-child(1) { background: #ff5f57; }
+#mg-root .mg-portal-dots span:nth-child(2) { background: #febc2e; }
+#mg-root .mg-portal-dots span:nth-child(3) { background: #28c840; }
+#mg-root .mg-portal-url { flex: 1; background: #fff; border-radius: 6px; padding: 5px 12px; font-size: 12px; color: var(--mg-gray-600); text-align: center; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; border: 1px solid rgba(0,0,0,0.06); }
+#mg-root .mg-portal-cards { padding: 22px; display: flex; flex-direction: column; gap: 12px; background: #fafafa; }
+#mg-root .mg-portal-card { background: #fff; border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--mg-gray-100); }
+#mg-root .mg-portal-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--mg-crimson), var(--mg-maroon)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; font-family: 'Space Grotesk', sans-serif; }
+#mg-root .mg-portal-info strong { display: block; font-size: 14px; font-weight: 600; color: var(--mg-dark); margin-bottom: 2px; }
+#mg-root .mg-portal-info span { display: block; font-size: 12px; color: var(--mg-gray-600); }
+#mg-root .mg-portal-eyebrow { display: inline-block; background: rgba(217,58,58,0.08); color: var(--mg-crimson); padding: 5px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+#mg-root .mg-portal-text h3 { font-size: clamp(22px, 3.2vw, 28px); font-weight: 700; line-height: 1.2; margin-bottom: 12px; color: var(--mg-dark); }
+#mg-root .mg-portal-text p { font-size: 15px; color: var(--mg-gray-700); line-height: 1.55; margin-bottom: 20px; }
+#mg-root .mg-portal-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+#mg-root .mg-pf-row { display: flex; align-items: center; gap: 10px; }
+#mg-root .mg-pf-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(217,58,58,0.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+#mg-root .mg-pf-icon svg { width: 16px; height: 16px; stroke: var(--mg-crimson); }
+#mg-root .mg-pf-text { font-size: 14px; color: var(--mg-dark); font-weight: 500; }
+#mg-root .mg-portal-cta { display: inline-block; background: var(--mg-crimson); color: #fff; padding: 10px 22px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; transition: var(--mg-transition); box-shadow: 0 2px 8px rgba(217,58,58,0.2); }
+#mg-root .mg-portal-cta:hover { background: #c02e2e; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(217,58,58,0.3); }
+
+/* ─── PAGINATION ─── */
+#mg-root .mg-pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 18px; flex-wrap: wrap; }
+#mg-root .mg-pagination button { padding: 6px 12px; min-width: 36px; border-radius: 8px; border: 1.5px solid var(--mg-gray-200); background: var(--mg-white); font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--mg-transition); color: var(--mg-dark); font-family: inherit; }
+#mg-root .mg-pagination button:hover:not(:disabled) { border-color: var(--mg-crimson); color: var(--mg-crimson); }
+#mg-root .mg-pagination button.active { background: var(--mg-crimson); color: var(--mg-white); border-color: var(--mg-crimson); }
+#mg-root .mg-pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+#mg-root .mg-pagination .mg-pg-ellipsis { padding: 6px 4px; color: var(--mg-gray-600); font-size: 13px; }
 
 /* ─── MODAL (body-level overlay) ─── */
 .mg-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: flex-start; padding: 20px; overflow-y: auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
@@ -302,12 +411,22 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 #mg-root .section-maroon .addl-table td { border-bottom-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
 #mg-root .section-maroon .addl-table a { color: #fca5a5; }
 
-/* ─── FOOTER ─── */
-#mg-root .footer { background: var(--mg-dark); color: rgba(255,255,255,0.7); padding: 28px 20px 18px; text-align: center; }
-#mg-root .footer a { color: var(--mg-crimson); text-decoration: none; }
-#mg-root .footer a:hover { color: #ef4444; }
-#mg-root .footer-logo { height: 32px; margin: 0 auto 16px; filter: brightness(0) invert(1); }
-#mg-root .footer p { font-size: 13px; margin-bottom: 6px; }
+/* ─── FOOTER (homepage-matched multi-column) ─── */
+#mg-root .footer { background: var(--mg-dark); color: rgba(255,255,255,0.7); padding: 44px 20px 22px; text-align: left; }
+#mg-root .footer a { text-decoration: none; transition: var(--mg-transition); }
+#mg-root .mg-footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 36px; max-width: 1160px; margin: 0 auto; }
+#mg-root .mg-footer-col h4 { color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 14px; }
+#mg-root .mg-footer-col a { color: rgba(255,255,255,0.7); font-size: 14px; display: block; margin-bottom: 8px; }
+#mg-root .mg-footer-col a:hover { color: var(--mg-crimson); }
+#mg-root .mg-footer-brand .footer-logo { height: 38px; width: auto; max-width: 200px; filter: brightness(0) invert(1); display: block; margin: 0 0 14px 0; object-fit: contain; }
+#mg-root .mg-footer-brand p { color: rgba(255,255,255,0.55); font-size: 13px; line-height: 1.55; margin-bottom: 14px; max-width: 300px; }
+#mg-root .mg-footer-socials { display: flex; gap: 10px; }
+#mg-root .mg-footer-socials a { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; margin: 0; color: rgba(255,255,255,0.7); }
+#mg-root .mg-footer-socials a:hover { background: var(--mg-crimson); color: #fff; }
+#mg-root .mg-footer-socials a svg { width: 16px; height: 16px; fill: currentColor; }
+#mg-root .mg-footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin: 32px auto 0; padding-top: 18px; text-align: center; color: rgba(255,255,255,0.5); font-size: 12px; max-width: 1160px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+#mg-root .mg-footer-bottom .mg-fb-links a { color: rgba(255,255,255,0.55); text-decoration: none; margin-left: 14px; }
+#mg-root .mg-footer-bottom .mg-fb-links a:hover { color: var(--mg-crimson); }
 
 /* ─── HELPERS ─── */
 #mg-root .text-crimson { color: var(--mg-crimson); }
@@ -351,12 +470,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
   #mg-root .screens-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   #mg-root .screen-card { padding: 8px; }
-  #mg-root .screen-preview { height: 90px; padding: 12px; }
-  #mg-root .screen-preview svg { width: 16px; height: 16px; }
-  #mg-root .screen-preview div[style*="width: 36px"] { width: 28px !important; height: 28px !important; }
-  #mg-root .screen-preview div[style*="font-size: 10px"] { font-size: 8px !important; }
-  #mg-root .screen-card h4 { font-size: 11px; margin-bottom: 1px; }
-  #mg-root .screen-card p { font-size: 9px; }
+  #mg-root .screen-shot { max-height: 260px; }
 
   #mg-root .steps { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   #mg-root .step-num { width: 32px; height: 32px; font-size: 14px; margin-bottom: 6px; }
@@ -384,12 +498,40 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   #mg-root .mq-question-item { padding: 6px 8px; font-size: 12px; }
   #mg-root .mq-questions-list { gap: 3px; }
 
-  #mg-root .pathway-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-  #mg-root .pathway-card { padding: 10px; }
-  #mg-root .pathway-card .pw-icon { font-size: 20px; margin-bottom: 4px; }
+  #mg-root .pathway-helper { font-size: 12px; margin-bottom: 12px; }
+  #mg-root .pathway-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  #mg-root .pw-tile { height: 80px; }
+  #mg-root .pw-tile svg { width: 44px; height: 44px; }
+  #mg-root .pathway-card-body { padding: 10px 12px 12px; }
   #mg-root .pathway-card h3 { font-size: 13px; margin-bottom: 2px; }
-  #mg-root .pathway-card p { font-size: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  #mg-root .pathway-card .pw-arrow { display: none; }
+  #mg-root .pathway-card p { font-size: 11px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  #mg-root .pathway-card .pw-arrow { margin-top: 6px; font-size: 11px; }
+
+  #mg-root .mg-expect-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+  #mg-root .mg-expect-tile { height: 70px; }
+  #mg-root .mg-expect-tile svg { width: 36px; height: 36px; }
+  #mg-root .mg-expect-body { padding: 10px 10px 12px; }
+  #mg-root .mg-expect-body p { font-size: 12px; }
+
+  #mg-root .mg-portal-section { padding: 24px 16px; }
+  #mg-root .mg-portal-grid { grid-template-columns: 1fr; gap: 22px; }
+  #mg-root .mg-portal-text h3 { font-size: 22px; }
+  #mg-root .mg-portal-text p { font-size: 14px; }
+  #mg-root .mg-portal-cards { padding: 14px; gap: 8px; }
+  #mg-root .mg-portal-card { padding: 10px; }
+  #mg-root .mg-portal-avatar { width: 40px; height: 40px; font-size: 14px; }
+  #mg-root .mg-portal-info strong { font-size: 13px; }
+  #mg-root .mg-portal-info span { font-size: 11px; }
+
+  #mg-root .mg-pagination button { padding: 5px 10px; min-width: 32px; font-size: 12px; }
+
+  #mg-root .mg-footer-grid { grid-template-columns: 1fr 1fr; gap: 22px; }
+  #mg-root .mg-footer-brand { grid-column: 1 / -1; }
+  #mg-root .mg-footer-brand p { max-width: 100%; }
+  #mg-root .mg-footer-col h4 { font-size: 11px; margin-bottom: 10px; }
+  #mg-root .mg-footer-col a { font-size: 13px; margin-bottom: 6px; }
+  #mg-root .mg-footer-bottom { flex-direction: column; gap: 6px; margin-top: 22px; }
+  #mg-root .mg-footer-bottom .mg-fb-links a { margin: 0 7px; }
 
   .mg-modal-overlay .mg-modal { margin: 8px; max-height: calc(100vh - 16px); border-radius: 10px; }
   .mg-modal-overlay .mg-modal-header { padding: 12px 14px 10px; }
@@ -455,11 +597,24 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   #mg-root .mq-cat-icon { max-height: 50px; }
   #mg-root .mq-cat-name { font-size: 9px; }
 
-  #mg-root .pathway-grid { grid-template-columns: 1fr; gap: 5px; }
-  #mg-root .pathway-card { padding: 8px; display: flex; align-items: center; gap: 8px; }
-  #mg-root .pathway-card .pw-icon { font-size: 18px; margin-bottom: 0; flex-shrink: 0; }
-  #mg-root .pathway-card h3 { font-size: 12px; margin-bottom: 0; }
-  #mg-root .pathway-card p { display: none; }
+  #mg-root .pathway-grid { grid-template-columns: 1fr; gap: 8px; }
+  #mg-root .pathway-card { flex-direction: row; align-items: stretch; }
+  #mg-root .pw-tile { height: auto; width: 88px; flex-shrink: 0; }
+  #mg-root .pw-tile svg { width: 36px; height: 36px; }
+  #mg-root .pathway-card-body { padding: 10px 12px; }
+  #mg-root .pathway-card h3 { font-size: 13px; margin-bottom: 2px; }
+  #mg-root .pathway-card p { font-size: 11px; line-height: 1.3; -webkit-line-clamp: 2; }
+  #mg-root .pathway-card .pw-arrow { display: none; }
+
+  #mg-root .mg-expect-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  #mg-root .mg-expect-tile { height: 60px; }
+  #mg-root .mg-expect-tile svg { width: 32px; height: 32px; }
+  #mg-root .mg-expect-body { padding: 8px 8px 10px; }
+  #mg-root .mg-expect-body p { font-size: 11px; }
+
+  #mg-root .mg-portal-section { padding: 18px 10px; }
+  #mg-root .mg-portal-text h3 { font-size: 19px; }
+  #mg-root .mg-portal-text p { font-size: 13px; }
 
   #mg-root .topic-item { padding: 7px 8px; font-size: 11px; }
   #mg-root .phase-badge { font-size: 8px; padding: 2px 5px; }
@@ -534,36 +689,47 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   </div>
 </section>
 
-<!-- PARTNER LOGOS TICKER -->
-<div class="partner-ticker">
-  <div class="ticker-content">
-    <span class="ticker-item">Google</span>
-    <span class="ticker-item">NYU</span>
-    <span class="ticker-item">Obama Foundation</span>
-    <span class="ticker-item">LSU</span>
-    <span class="ticker-item">U of Michigan</span>
-    <span class="ticker-item">UT Austin</span>
-    <span class="ticker-item">Chicago Public Schools</span>
-    <span class="ticker-item">UNT</span>
-    <span class="ticker-item">Xavier University</span>
-    <span class="ticker-item">Lurie Children's</span>
-    <span class="ticker-item">Gilead</span>
-    <span class="ticker-item">3Advance</span>
-    <span class="ticker-item">Chicago State University</span>
-    <span class="ticker-item">Langston University</span>
-    <span class="ticker-item">100 Black Men</span>
-    <span class="ticker-item">MBK Chicago</span>
-    <span class="ticker-item">CHAMPS Mentoring</span>
-    <span class="ticker-item">Project H.O.O.D.</span>
+<!-- PARTNER LOGO CAROUSEL (reuses homepage logos) -->
+<section class="lc-section">
+  <div class="lc-label">Trusted by leading institutions</div>
+  <div class="lc-wrap">
+    <div class="lc-fl"></div>
+    <div class="lc-track">
+      <img src="${LOGO_BASE}csu.png" alt="Chicago State University" class="lc-h32">
+      <img src="${LOGO_BASE}xavier.png" alt="Xavier University" class="lc-h36">
+      <img src="${LOGO_BASE}langston.png" alt="Langston University" class="lc-h36">
+      <img src="${LOGO_BASE}nyu.png" alt="NYU" class="lc-h32">
+      <img src="${LOGO_BASE}google.png" alt="Google" class="lc-h32">
+      <img src="${LOGO_BASE}lsu.png" alt="LSU" class="lc-h36">
+      <img src="${LOGO_BASE}mbk.png" alt="My Brother's Keeper" class="lc-h36">
+      <img src="${LOGO_BASE}project-hood.png" alt="Project H.O.O.D." class="lc-h36">
+      <img src="${LOGO_BASE}cps.png" alt="Chicago Public Schools" class="lc-h32">
+      <img src="${LOGO_BASE}100bm.png" alt="100 Black Men" class="lc-h36">
+      <img src="${LOGO_BASE}gilead.png" alt="Gilead" class="lc-h32">
+      <img src="${LOGO_BASE}lurie.png" alt="Lurie Children's" class="lc-h32">
+      <!-- Duplicated for seamless loop -->
+      <img src="${LOGO_BASE}csu.png" alt="" class="lc-h32" aria-hidden="true">
+      <img src="${LOGO_BASE}xavier.png" alt="" class="lc-h36" aria-hidden="true">
+      <img src="${LOGO_BASE}langston.png" alt="" class="lc-h36" aria-hidden="true">
+      <img src="${LOGO_BASE}nyu.png" alt="" class="lc-h32" aria-hidden="true">
+      <img src="${LOGO_BASE}google.png" alt="" class="lc-h32" aria-hidden="true">
+      <img src="${LOGO_BASE}lsu.png" alt="" class="lc-h36" aria-hidden="true">
+      <img src="${LOGO_BASE}mbk.png" alt="" class="lc-h36" aria-hidden="true">
+      <img src="${LOGO_BASE}project-hood.png" alt="" class="lc-h36" aria-hidden="true">
+      <img src="${LOGO_BASE}cps.png" alt="" class="lc-h32" aria-hidden="true">
+      <img src="${LOGO_BASE}100bm.png" alt="" class="lc-h36" aria-hidden="true">
+      <img src="${LOGO_BASE}gilead.png" alt="" class="lc-h32" aria-hidden="true">
+      <img src="${LOGO_BASE}lurie.png" alt="" class="lc-h32" aria-hidden="true">
+    </div>
+    <div class="lc-fr"></div>
   </div>
-</div>
+</section>
 
 <!-- MENTORSHIP FOR THE NEXT GENERATION -->
 <section class="section" id="welcome-section">
   <div class="section-header">
     <span class="section-label">Welcome</span>
     <h2>Mentorship for the Next Generation</h2>
-    <p>The Pulse of Perseverance Project (P3) is a non-profit committed to breaking down barriers for young people by offering mentorship, scholarships, and professional development opportunities.</p>
   </div>
 
   <div class="fade-up">
@@ -609,30 +775,30 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
     <div class="max-w-800 fade-up">
       <p style="font-size:15px; color:var(--mg-gray-700); margin-bottom:18px;">Mentees bring energy, insight, and questions. In many cases, you may learn from them as well. Mentorship is about walking alongside someone &mdash; not directing their path, but illuminating it. We honor the lived experience of all mentors. Whether you're an executive or early-career professional, your journey matters.</p>
 
-      <div class="card-grid card-grid-3" style="margin-bottom:16px;">
-        <div class="card" style="text-align:center; padding:14px 10px;">
-          <div style="font-size:24px; margin-bottom:8px;">🎤</div>
-          <p style="font-size:13px;">Be authentic, not scripted (storytelling)</p>
+      <div class="mg-expect-grid">
+        <div class="mg-expect-card">
+          <div class="mg-expect-tile bg-1">${svgMic}</div>
+          <div class="mg-expect-body"><p>Be authentic, not scripted (storytelling)</p></div>
         </div>
-        <div class="card" style="text-align:center; padding:14px 10px;">
-          <div style="font-size:24px; margin-bottom:8px;">💬</div>
-          <p style="font-size:13px;">Use clear, jargon-free language</p>
+        <div class="mg-expect-card">
+          <div class="mg-expect-tile bg-2">${svgSpeak}</div>
+          <div class="mg-expect-body"><p>Use clear, jargon-free language</p></div>
         </div>
-        <div class="card" style="text-align:center; padding:14px 10px;">
-          <div style="font-size:24px; margin-bottom:8px;">🤝</div>
-          <p style="font-size:13px;">Share real experiences, successes and failures</p>
+        <div class="mg-expect-card">
+          <div class="mg-expect-tile bg-3">${svgShake}</div>
+          <div class="mg-expect-body"><p>Share real experiences, successes and failures</p></div>
         </div>
-        <div class="card" style="text-align:center; padding:14px 10px;">
-          <div style="font-size:24px; margin-bottom:8px;">🔍</div>
-          <p style="font-size:13px;">Offer insight and transparency about your field</p>
+        <div class="mg-expect-card">
+          <div class="mg-expect-tile bg-4">${svgLightbulb}</div>
+          <div class="mg-expect-body"><p>Offer insight and transparency about your field</p></div>
         </div>
-        <div class="card" style="text-align:center; padding:14px 10px;">
-          <div style="font-size:24px; margin-bottom:8px;">🎬</div>
-          <p style="font-size:13px;">Focus each video on one prompt</p>
+        <div class="mg-expect-card">
+          <div class="mg-expect-tile bg-5">${svgFilm}</div>
+          <div class="mg-expect-body"><p>Focus each video on one prompt</p></div>
         </div>
-        <div class="card" style="text-align:center; padding:14px 10px;">
-          <div style="font-size:24px; margin-bottom:8px;">📣</div>
-          <p style="font-size:13px;">Encourage mentees to reach out or reflect</p>
+        <div class="mg-expect-card">
+          <div class="mg-expect-tile bg-6">${svgMegaphone}</div>
+          <div class="mg-expect-body"><p>Encourage mentees to reach out or reflect</p></div>
         </div>
       </div>
 
@@ -660,17 +826,19 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
         </div>
       </div>
 
-      <div style="margin-top: 20px;">
-        <h3 style="text-align: center; font-size: 15px; font-weight: 600; margin-bottom: 14px;">Your Engagement Journey</h3>
+      <div class="journey-wrap">
+        <span class="journey-eyebrow">What We Ask of You</span>
+        <h3 class="journey-title">Your Engagement Journey</h3>
+        <p class="journey-sub">Four simple commitments. The cadence in red is what mentees are counting on.</p>
         <div class="timeline-h">
           <div class="tl-step">
             <div class="tl-dot">📹</div>
-            <div class="tl-label"><strong>Record Videos</strong><span>Share your authentic story</span><em>2-4 / month</em></div>
+            <div class="tl-label"><strong>Record Videos</strong><span>Share your authentic story</span><em>2–4 / month</em></div>
           </div>
           <div class="tl-line"></div>
           <div class="tl-step">
             <div class="tl-dot">💬</div>
-            <div class="tl-label"><strong>Answer Questions</strong><span>Direct mentee feedback</span><em>Within 3-5 days</em></div>
+            <div class="tl-label"><strong>Answer Questions</strong><span>Direct mentee feedback</span><em>Within 3–5 days</em></div>
           </div>
           <div class="tl-line"></div>
           <div class="tl-step">
@@ -698,60 +866,16 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
   <div class="screens-grid">
     <div class="screen-card">
-      <div class="screen-preview" style="background: linear-gradient(180deg, #D93A3A 0%, #6B1D1D 40%, #1a1a2e 100%);">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 6px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-        </div>
-        <div style="font-size: 10px; color: rgba(255,255,255,0.9); font-weight: 600; letter-spacing: 0.5px;">MY VIDEOS</div>
-        <div style="margin-top: 8px; width: 80%; display: flex; flex-direction: column; gap: 4px;">
-          <div style="height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px;"></div>
-          <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; width: 60%;"></div>
-        </div>
-      </div>
-      <h4>Share</h4>
-      <p>Record mentor videos</p>
+      <img class="screen-shot" src="${SHOT_VIDEOS}" alt="My Videos screen — mentor video library in P3 app" loading="lazy">
     </div>
     <div class="screen-card">
-      <div class="screen-preview" style="background: linear-gradient(180deg, #2563eb 0%, #1e40af 40%, #1a1a2e 100%);">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 6px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
-        <div style="font-size: 10px; color: rgba(255,255,255,0.9); font-weight: 600; letter-spacing: 0.5px;">MILESTONES</div>
-        <div style="margin-top: 8px; width: 80%; display: flex; flex-direction: column; gap: 4px;">
-          <div style="height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px;"></div>
-          <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; width: 70%;"></div>
-        </div>
-      </div>
-      <h4>Track</h4>
-      <p>Help achieve milestones</p>
+      <img class="screen-shot" src="${SHOT_MILESTONES}" alt="Milestones screen — track mentee progress" loading="lazy">
     </div>
     <div class="screen-card">
-      <div class="screen-preview" style="background: linear-gradient(180deg, #059669 0%, #065f46 40%, #1a1a2e 100%);">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 6px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div style="font-size: 10px; color: rgba(255,255,255,0.9); font-weight: 600; letter-spacing: 0.5px;">QUESTIONS</div>
-        <div style="margin-top: 8px; width: 80%; display: flex; flex-direction: column; gap: 4px;">
-          <div style="height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px;"></div>
-          <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; width: 50%;"></div>
-        </div>
-      </div>
-      <h4>Guide</h4>
-      <p>Answer questions</p>
+      <img class="screen-shot" src="${SHOT_GUIDE}" alt="Guide screen — answer mentee questions" loading="lazy">
     </div>
     <div class="screen-card">
-      <div class="screen-preview" style="background: linear-gradient(180deg, #d97706 0%, #92400e 40%, #1a1a2e 100%);">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 6px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3l-4 4-4-4"/></svg>
-        </div>
-        <div style="font-size: 10px; color: rgba(255,255,255,0.9); font-weight: 600; letter-spacing: 0.5px;">OPPORTUNITIES</div>
-        <div style="margin-top: 8px; width: 80%; display: flex; flex-direction: column; gap: 4px;">
-          <div style="height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px;"></div>
-          <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; width: 65%;"></div>
-        </div>
-      </div>
-      <h4>Kickstart</h4>
-      <p>Share opportunities</p>
+      <img class="screen-shot" src="${SHOT_OPPORTUNITIES}" alt="Opportunities screen — share internships and scholarships" loading="lazy">
     </div>
   </div>
 
@@ -775,6 +899,52 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
       <div class="step-num"></div>
       <h4>Kickstart Opportunities</h4>
       <p>Share internships, scholarships, and career-building resources with your mentees.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GET DISCOVERED PORTAL -->
+<section class="mg-portal-section">
+  <div class="mg-portal-grid">
+    <div class="mg-portal-preview">
+      <div class="mg-portal-bar">
+        <div class="mg-portal-dots"><span></span><span></span><span></span></div>
+        <div class="mg-portal-url">mentors.pulseofp3.org</div>
+      </div>
+      <div class="mg-portal-cards">
+        <div class="mg-portal-card">
+          <div class="mg-portal-avatar">TP</div>
+          <div class="mg-portal-info"><strong>Thomas Paris</strong><span>COO · Pulse of P3</span></div>
+        </div>
+        <div class="mg-portal-card">
+          <div class="mg-portal-avatar">AE</div>
+          <div class="mg-portal-info"><strong>Alfred Edmond</strong><span>SVP · Black Enterprise</span></div>
+        </div>
+        <div class="mg-portal-card">
+          <div class="mg-portal-avatar">AK</div>
+          <div class="mg-portal-info"><strong>Arthur Kenard Killingsworth</strong><span>Product Leader · Google</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="mg-portal-text">
+      <span class="mg-portal-eyebrow">National Mentor Portal</span>
+      <h3>Get discovered by students nationwide</h3>
+      <p>Your public mentor profile at mentors.pulseofp3.org lets students find you through our smart-match engine &mdash; and gives you a shareable link to amplify your impact.</p>
+      <div class="mg-portal-features">
+        <div class="mg-pf-row">
+          <div class="mg-pf-icon">${svgGlobe}</div>
+          <div class="mg-pf-text">Discoverable by students across the country</div>
+        </div>
+        <div class="mg-pf-row">
+          <div class="mg-pf-icon">${svgChat}</div>
+          <div class="mg-pf-text">AI-powered matching based on pathway &amp; goals</div>
+        </div>
+        <div class="mg-pf-row">
+          <div class="mg-pf-icon">${svgShareSm}</div>
+          <div class="mg-pf-text">One shareable link for LinkedIn, email, and bios</div>
+        </div>
+      </div>
+      <a href="https://mentors.pulseofp3.org" target="_blank" rel="noopener" class="mg-portal-cta">View your profile &rarr;</a>
     </div>
   </div>
 </section>
@@ -812,16 +982,44 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
     <p>This provides added structure if your mentee (or yourself) has a passion for a specific sector.</p>
   </div>
 
+  <p class="pathway-helper">Tap each industry to see details</p>
   <div class="pathway-grid">
-    <div class="pathway-card" onclick="mgShowPathway('exec')"><span class="pw-icon">👔</span><h3>Executive Leadership</h3><p>C-suite, directors, strategic planning, and organizational leadership roles.</p><span class="pw-arrow">→</span></div>
-    <div class="pathway-card" onclick="mgShowPathway('tech')"><span class="pw-icon">💻</span><h3>Tech</h3><p>Software engineering, IT, cybersecurity, data science, and infrastructure.</p><span class="pw-arrow">→</span></div>
-    <div class="pathway-card" onclick="mgShowPathway('healthcare')"><span class="pw-icon">⚕️</span><h3>Healthcare</h3><p>Medicine, nursing, clinical research, healthcare management, and public health.</p><span class="pw-arrow">→</span></div>
-    <div class="pathway-card" onclick="mgShowPathway('legal')"><span class="pw-icon">⚖️</span><h3>Legal</h3><p>Law, litigation, corporate legal, public interest, and policy advocacy.</p><span class="pw-arrow">→</span></div>
-    <div class="pathway-card" onclick="mgShowPathway('banking')"><span class="pw-icon">🏦</span><h3>Banking &amp; Finance</h3><p>Investment banking, corporate finance, wealth management, and financial analysis.</p><span class="pw-arrow">→</span></div>
-    <div class="pathway-card" onclick="mgShowPathway('business')"><span class="pw-icon">📊</span><h3>Business</h3><p>Marketing, operations, entrepreneurship, consulting, and strategic management.</p><span class="pw-arrow">→</span></div>
-    <div class="pathway-card" onclick="mgShowPathway('education')"><span class="pw-icon">🎓</span><h3>Education</h3><p>K-12 teaching, higher education, instructional design, and EdTech innovation.</p><span class="pw-arrow">→</span></div>
-    <div class="pathway-card" onclick="mgShowPathway('sports')"><span class="pw-icon">⚽</span><h3>Sports &amp; Athletics</h3><p>Coaching, sports management, athletic training, analytics, and event operations.</p><span class="pw-arrow">→</span></div>
-    <div class="pathway-card" onclick="mgShowPathway('iteng')"><span class="pw-icon">🔧</span><h3>IT &amp; Engineering</h3><p>Software, systems, mechanical, electrical, civil, and infrastructure engineering.</p><span class="pw-arrow">→</span></div>
+    <div class="pathway-card" onclick="mgShowPathway('exec')">
+      <div class="pw-tile bg-1">${svgExec}</div>
+      <div class="pathway-card-body"><h3>Executive Leadership</h3><p>C-suite, directors, strategic planning, and organizational leadership roles.</p><span class="pw-arrow">View details →</span></div>
+    </div>
+    <div class="pathway-card" onclick="mgShowPathway('tech')">
+      <div class="pw-tile bg-2">${svgTech}</div>
+      <div class="pathway-card-body"><h3>Tech</h3><p>Software engineering, IT, cybersecurity, data science, and infrastructure.</p><span class="pw-arrow">View details →</span></div>
+    </div>
+    <div class="pathway-card" onclick="mgShowPathway('healthcare')">
+      <div class="pw-tile bg-3">${svgHealth}</div>
+      <div class="pathway-card-body"><h3>Healthcare</h3><p>Medicine, nursing, clinical research, healthcare management, and public health.</p><span class="pw-arrow">View details →</span></div>
+    </div>
+    <div class="pathway-card" onclick="mgShowPathway('legal')">
+      <div class="pw-tile bg-4">${svgLegal}</div>
+      <div class="pathway-card-body"><h3>Legal</h3><p>Law, litigation, corporate legal, public interest, and policy advocacy.</p><span class="pw-arrow">View details →</span></div>
+    </div>
+    <div class="pathway-card" onclick="mgShowPathway('banking')">
+      <div class="pw-tile bg-5">${svgBank}</div>
+      <div class="pathway-card-body"><h3>Banking &amp; Finance</h3><p>Investment banking, corporate finance, wealth management, and financial analysis.</p><span class="pw-arrow">View details →</span></div>
+    </div>
+    <div class="pathway-card" onclick="mgShowPathway('business')">
+      <div class="pw-tile bg-6">${svgBiz}</div>
+      <div class="pathway-card-body"><h3>Business</h3><p>Marketing, operations, entrepreneurship, consulting, and strategic management.</p><span class="pw-arrow">View details →</span></div>
+    </div>
+    <div class="pathway-card" onclick="mgShowPathway('education')">
+      <div class="pw-tile bg-7">${svgEdu}</div>
+      <div class="pathway-card-body"><h3>Education</h3><p>K-12 teaching, higher education, instructional design, and EdTech innovation.</p><span class="pw-arrow">View details →</span></div>
+    </div>
+    <div class="pathway-card" onclick="mgShowPathway('sports')">
+      <div class="pw-tile bg-8">${svgSports}</div>
+      <div class="pathway-card-body"><h3>Sports &amp; Athletics</h3><p>Coaching, sports management, athletic training, analytics, and event operations.</p><span class="pw-arrow">View details →</span></div>
+    </div>
+    <div class="pathway-card" onclick="mgShowPathway('iteng')">
+      <div class="pw-tile bg-9">${svgIT}</div>
+      <div class="pathway-card-body"><h3>IT &amp; Engineering</h3><p>Software, systems, mechanical, electrical, civil, and infrastructure engineering.</p><span class="pw-arrow">View details →</span></div>
+    </div>
   </div>
 </section></div>
 
@@ -942,6 +1140,7 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   </div>
 
   <div class="resource-grid" id="mg-resourceGrid"></div>
+  <div class="mg-pagination" id="mg-resourcePagination"></div>
   <div class="resource-count" id="mg-resourceCount"></div>
 </section></div>
 
@@ -1035,11 +1234,44 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- FOOTER (homepage-matched) -->
 <footer class="footer">
-  <img src="${LOGO}" alt="P3 Logo" class="footer-logo">
-  <p>&copy; 2026 Pulse of Perseverance Project. All rights reserved.</p>
-  <p style="font-size: 12px; margin-top: 12px;"><a href="/app-terms-conditions">Terms &amp; Conditions</a> &nbsp;|&nbsp; <a href="/about/in-the-press">Press</a> &nbsp;|&nbsp; <a href="/partner#contact">Contact Us</a></p>
+  <div class="mg-footer-grid">
+    <div class="mg-footer-col mg-footer-brand">
+      <img src="${LOGO}" alt="Pulse of P3" class="footer-logo">
+      <p>Unlocking life-changing opportunities for young visionaries through mentorship, scholarships, and career pathways.</p>
+      <div class="mg-footer-socials">
+        <a href="https://www.facebook.com/pulseofp3" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.43H7.08v-3.5h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.5h-2.8V24C19.61 23.09 24 18.1 24 12.07z"/></svg></a>
+        <a href="https://www.instagram.com/pulseofp3" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.71 3.71 0 0 1-1.38-.9 3.71 3.71 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.8.31-1.47.73-2.14 1.4C1.33 2.7.91 3.37.6 4.17c-.3.76-.5 1.64-.56 2.91C0 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.8.73 1.47 1.4 2.14.67.67 1.34 1.09 2.14 1.4.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.8-.31 1.47-.73 2.14-1.4.67-.67 1.09-1.34 1.4-2.14.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.8-.73-1.47-1.4-2.14A5.96 5.96 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg></a>
+        <a href="https://www.linkedin.com/company/pulseofp3" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
+        <a href="https://www.youtube.com/@pulseofp3" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+      </div>
+    </div>
+    <div class="mg-footer-col">
+      <h4>Product</h4>
+      <a href="/for-students">For Students</a>
+      <a href="/for-mentors">For Mentors</a>
+      <a href="/partner">For Institutions</a>
+      <a href="/mentorship-guide">Mentorship Guide</a>
+    </div>
+    <div class="mg-footer-col">
+      <h4>About</h4>
+      <a href="/about">About Us</a>
+      <a href="/scholarships">Scholarships</a>
+      <a href="/about/in-the-press">Press</a>
+      <a href="/partner#contact">Contact</a>
+    </div>
+    <div class="mg-footer-col">
+      <h4>Get Involved</h4>
+      <a href="/donate">Donate</a>
+      <a href="/for-mentors">Become a Mentor</a>
+      <a href="https://mentors.pulseofp3.org" target="_blank" rel="noopener">Mentor Portal</a>
+    </div>
+  </div>
+  <div class="mg-footer-bottom">
+    <span>&copy; 2026 Pulse of Perseverance Project. All rights reserved.</span>
+    <span class="mg-fb-links"><a href="/app-terms-conditions">Terms &amp; Conditions</a><a href="/privacy-policy">Privacy</a></span>
+  </div>
 </footer>
 `;
 
@@ -1484,16 +1716,27 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
   var currentIndustryFilter = '';
   var currentTypeFilter = 'all';
+  var currentPage = 1;
+  var PAGE_SIZE = 20;
   window.mgFilterResources = function() {
     var el = document.getElementById('mg-industryFilter');
     if (el) currentIndustryFilter = el.value;
+    currentPage = 1;
     renderResources();
   };
   window.mgFilterByType = function(type, btn) {
     root.querySelectorAll('.filter-type .filter-btn').forEach(function(b) { b.classList.remove('active'); });
     if (btn) btn.classList.add('active');
     currentTypeFilter = type;
+    currentPage = 1;
     renderResources();
+  };
+  window.mgGoToPage = function(page) {
+    currentPage = page;
+    renderResources();
+    // Scroll resources section into view
+    var section = document.getElementById('resources');
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
   function renderResources() {
     var filtered = resources.filter(function(r) {
@@ -1503,10 +1746,12 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
     });
     var grid = document.getElementById('mg-resourceGrid');
     var count = document.getElementById('mg-resourceCount');
+    var pag = document.getElementById('mg-resourcePagination');
     if (!grid || !count) return;
     if (filtered.length === 0) {
       grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--mg-gray-600);">No resources found. Try adjusting your filters.</div>';
       count.textContent = '';
+      if (pag) pag.innerHTML = '';
       return;
     }
     var typeIcons = {
@@ -1517,11 +1762,47 @@ html.mg-active { scroll-behavior: smooth; scroll-padding-top: 72px; }
       'Tutorials': ['▶', 'tutorial'],
       'Certificates/University Courses': ['🏅', 'cert']
     };
-    grid.innerHTML = filtered.map(function(r) {
+    var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    var start = (currentPage - 1) * PAGE_SIZE;
+    var end = Math.min(start + PAGE_SIZE, filtered.length);
+    var pageItems = filtered.slice(start, end);
+    grid.innerHTML = pageItems.map(function(r) {
       var pair = typeIcons[r.type] || ['📄', 'web'];
       return '<a href="' + r.url + '" target="_blank" rel="noopener noreferrer" class="resource-item"><div class="resource-type-icon ' + pair[1] + '">' + pair[0] + '</div><div class="resource-info"><h4>' + r.name + '</h4><span>' + r.type + ' · ' + r.industry + '</span></div></a>';
     }).join('');
-    count.textContent = 'Showing ' + filtered.length + ' of ' + resources.length + ' resources';
+    count.textContent = 'Showing ' + (start + 1) + '–' + end + ' of ' + filtered.length + ' resources';
+    // Render pagination controls
+    if (pag) {
+      if (totalPages <= 1) {
+        pag.innerHTML = '';
+      } else {
+        var html = '';
+        html += '<button onclick="mgGoToPage(' + (currentPage - 1) + ')"' + (currentPage === 1 ? ' disabled' : '') + ' aria-label="Previous page">&larr; Prev</button>';
+        // Page numbers: compact with ellipsis for large totals
+        var pages = [];
+        if (totalPages <= 7) {
+          for (var i = 1; i <= totalPages; i++) pages.push(i);
+        } else {
+          pages.push(1);
+          if (currentPage > 3) pages.push('…');
+          var startP = Math.max(2, currentPage - 1);
+          var endP = Math.min(totalPages - 1, currentPage + 1);
+          for (var j = startP; j <= endP; j++) pages.push(j);
+          if (currentPage < totalPages - 2) pages.push('…');
+          pages.push(totalPages);
+        }
+        pages.forEach(function(p) {
+          if (p === '…') {
+            html += '<span class="mg-pg-ellipsis">…</span>';
+          } else {
+            html += '<button onclick="mgGoToPage(' + p + ')"' + (p === currentPage ? ' class="active"' : '') + '>' + p + '</button>';
+          }
+        });
+        html += '<button onclick="mgGoToPage(' + (currentPage + 1) + ')"' + (currentPage === totalPages ? ' disabled' : '') + ' aria-label="Next page">Next &rarr;</button>';
+        pag.innerHTML = html;
+      }
+    }
   }
 
   // ═══ 9. INITIAL RENDER + FADE-UP OBSERVER ═══
